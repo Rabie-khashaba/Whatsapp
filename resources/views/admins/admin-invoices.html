@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices - Admin Panel</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold text-danger">Admin Panel</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="admin-dashboard.html"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>CUSTOMERS</span></li>
+            <li><a href="admin-customers.html"><i class="bi bi-people"></i><span>All Customers</span></a></li>
+            <li><a href="admin-customers.html?status=active"><i class="bi bi-person-check"></i><span>Active</span></a></li>
+            <li><a href="admin-customers.html?status=expired"><i class="bi bi-person-x"></i><span>Expired</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>SUBSCRIPTIONS</span></li>
+            <li><a href="admin-plans.html"><i class="bi bi-boxes"></i><span>Plans</span></a></li>
+            <li><a href="admin-subscriptions.html"><i class="bi bi-calendar-check"></i><span>Active Subscriptions</span></a></li>
+            <li><a href="admin-subscriptions.html?status=expiring"><i class="bi bi-calendar-x"></i><span>Expiring Soon</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>PAYMENTS</span></li>
+            <li><a href="admin-payments-queue.html"><i class="bi bi-hourglass-split"></i><span>Pending Payments</span></a></li>
+            <li><a href="admin-payments.html"><i class="bi bi-credit-card"></i><span>All Payments</span></a></li>
+            <li><a href="admin-invoices.html" class="active"><i class="bi bi-receipt"></i><span>Invoices</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>REPORTS</span></li>
+            <li><a href="admin-reports.html"><i class="bi bi-graph-up"></i><span>Analytics</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>SETTINGS</span></li>
+            <li><a href="admin-admins.html"><i class="bi bi-shield-check"></i><span>Admin Users</span></a></li>
+            <li><a href="admin-settings.html"><i class="bi bi-gear"></i><span>System Settings</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="adminLogout()">
+                <i class="bi bi-box-arrow-left me-2"></i>Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-link mobile-menu-toggle d-lg-none p-0" onclick="toggleSidebar()"><i class="bi bi-list fs-3"></i></button>
+                    <div>
+                        <h4 class="mb-0">Invoices</h4>
+                        <small class="text-muted">Manage customer invoices</small>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" onclick="toggleLanguage()"><i class="bi bi-globe"></i></button>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;"><i class="bi bi-receipt"></i></div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Total Invoices</p>
+                        <h3 class="mb-0 fw-bold" id="totalInvoices">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;"><i class="bi bi-check-circle"></i></div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Paid Invoices</p>
+                        <h3 class="mb-0 fw-bold" id="paidInvoices">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;"><i class="bi bi-cash-stack"></i></div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Total Amount</p>
+                        <h3 class="mb-0 fw-bold text-success" id="totalAmount">$0.00</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card mb-3">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search invoices...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" onclick="applyFilters()"><i class="bi bi-search"></i> Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Customer</th>
+                            <th>Plan</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoicesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/admin-invoices.js"></script>
+</body>
+</html>

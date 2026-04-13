@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - Admin Panel</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold text-danger">Admin Panel</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="admin-dashboard.html"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a></li>
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>CUSTOMERS</span></li>
+            <li><a href="admin-customers.html"><i class="bi bi-people"></i><span>All Customers</span></a></li>
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>PAYMENTS</span></li>
+            <li><a href="admin-payments-queue.html"><i class="bi bi-hourglass-split"></i><span>Pending Payments</span></a></li>
+            <li><a href="admin-payments.html"><i class="bi bi-credit-card"></i><span>All Payments</span></a></li>
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>REPORTS</span></li>
+            <li><a href="admin-reports.html" class="active"><i class="bi bi-graph-up"></i><span>Analytics</span></a></li>
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span>SETTINGS</span></li>
+            <li><a href="admin-admins.html"><i class="bi bi-shield-check"></i><span>Admin Users</span></a></li>
+            <li><a href="admin-settings.html"><i class="bi bi-gear"></i><span>System Settings</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="adminLogout()"><i class="bi bi-box-arrow-left me-2"></i>Logout</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">Reports & Analytics</h4>
+                    <small class="text-muted">Business insights and statistics</small>
+                </div>
+                <button class="btn btn-sm btn-primary"><i class="bi bi-download me-2"></i>Export Report</button>
+            </div>
+        </div>
+
+        <!-- Time Period Filter -->
+        <div class="dashboard-card mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">Time Period</label>
+                    <select class="form-select" id="timePeriod" onchange="updateReports()">
+                        <option value="this_month">This Month</option>
+                        <option value="last_month">Last Month</option>
+                        <option value="this_year">This Year</option>
+                        <option value="last_year">Last Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">From Date</label>
+                    <input type="date" class="form-control" id="dateFrom">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">To Date</label>
+                    <input type="date" class="form-control" id="dateTo">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100" onclick="updateReports()"><i class="bi bi-arrow-clockwise me-2"></i>Update</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;"><i class="bi bi-people"></i></div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Total Customers</p>
+                        <h3 class="mb-0 fw-bold">156</h3>
+                        <small class="text-success"><i class="bi bi-arrow-up"></i> +12% vs last period</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;"><i class="bi bi-person-check"></i></div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Active Customers</p>
+                        <h3 class="mb-0 fw-bold">142</h3>
+                        <small class="text-muted">91% of total</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(239, 68, 68, 0.1); color: #EF4444;"><i class="bi bi-person-x"></i></div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Expired</p>
+                        <h3 class="mb-0 fw-bold">14</h3>
+                        <small class="text-warning"><i class="bi bi-exclamation-triangle"></i> Needs attention</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(251, 191, 36, 0.1); color: #FBBF24;"><i class="bi bi-cash-stack"></i></div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1">Total Revenue</p>
+                        <h3 class="mb-0 fw-bold text-success">$28,450</h3>
+                        <small class="text-success"><i class="bi bi-arrow-up"></i> +18% vs last month</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue & Plan Distribution -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-8">
+                <div class="dashboard-card">
+                    <h5 class="mb-3">Monthly Revenue Trend</h5>
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Chart visualization would go here (integrate Chart.js or similar library)
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="dashboard-card">
+                    <h5 class="mb-3">Plan Distribution</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Basic</span>
+                            <span class="fw-bold">45 (28.8%)</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-secondary" style="width: 28.8%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Pro</span>
+                            <span class="fw-bold">78 (50%)</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 8px;">
+                            <div class="progress-bar bg-primary" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Enterprise</span>
+                            <span class="fw-bold">33 (21.2%)</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" style="width: 21.2%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Customers -->
+        <div class="dashboard-card">
+            <h5 class="mb-3">Top Customers by Revenue</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Customer</th>
+                            <th>Plan</th>
+                            <th>Total Paid</th>
+                            <th>Last Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Ahmed Mohamed Ali</td>
+                            <td><span class="badge bg-warning">Enterprise</span></td>
+                            <td class="fw-bold text-success">$2,999.97</td>
+                            <td>Dec 15, 2024</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Sara Ahmed Mahmoud</td>
+                            <td><span class="badge bg-warning">Enterprise</span></td>
+                            <td class="fw-bold text-success">$1,999.98</td>
+                            <td>Dec 10, 2024</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Mohamed Hassan</td>
+                            <td><span class="badge bg-primary">Pro</span></td>
+                            <td class="fw-bold text-success">$899.97</td>
+                            <td>Dec 5, 2024</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/admin-reports.js"></script>
+</body>
+</html>

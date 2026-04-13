@@ -1,8 +1,8 @@
-@extends('layouts.master')
+﻿@extends('layouts.master')
 
 @section('title', 'My Instances - WhatsApp Campaign Platform')
 @section('page-title', 'My Instances')
-@section('page-title-ar', 'مثيلات الواتساب')
+@section('page-title-ar', 'Ù…Ø«ÙŠÙ„Ø§Øª Ø§Ù„ÙˆØ§ØªØ³Ø§Ø¨')
 
 @section('content')
     <!-- Stats Cards -->
@@ -33,9 +33,12 @@
                     <i class="bi bi-phone"></i>
                 </div>
                 <div class="flex-grow-1">
-                    <p class="text-muted mb-1" data-en="Remaining Instances" data-ar="المثيلات المتبقية">Remaining Instances
+                    <p class="text-muted mb-1" data-en="Remaining Instances" data-ar="Ø§Ù„Ù…Ø«ÙŠÙ„Ø§Øª Ø§Ù„Ù…ØªØ¨Ù‚ÙŠØ©">Remaining Instances
                     </p>
                     <h3 class="mb-0 fw-bold">{{ $remainingInstances }}</h3>
+                    @if(auth()->user()->type === 'user')
+                        <small class="text-muted">Limit: {{ $instanceLimit }}</small>
+                    @endif
                 </div>
             </div>
         </div>
@@ -45,7 +48,7 @@
                     <i class="bi bi-chat-dots"></i>
                 </div>
                 <div class="flex-grow-1">
-                    <p class="text-muted mb-1" data-en="Total Messages" data-ar="إجمالي الرسائل">Total Messages</p>
+                    <p class="text-muted mb-1" data-en="Total Messages" data-ar="Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø±Ø³Ø§Ø¦Ù„">Total Messages</p>
                     <h3 class="mb-0 fw-bold">{{ $totalMessages }}</h3>
                 </div>
             </div>
@@ -56,7 +59,7 @@
                     <i class="bi bi-megaphone"></i>
                 </div>
                 <div class="flex-grow-1">
-                    <p class="text-muted mb-1" data-en="Total Campaigns" data-ar="إجمالي الحملات">Total Campaigns</p>
+                    <p class="text-muted mb-1" data-en="Total Campaigns" data-ar="Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø­Ù…Ù„Ø§Øª">Total Campaigns</p>
                     <h3 class="mb-0 fw-bold">{{ $totalCampaigns }}</h3>
                 </div>
             </div>
@@ -69,17 +72,17 @@
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-primary active" onclick="toggleView('grid')">
                     <i class="bi bi-grid-3x3-gap me-1"></i>
-                    <span data-en="Grid View" data-ar="عرض الشبكة">Grid View</span>
+                    <span data-en="Grid View" data-ar="Ø¹Ø±Ø¶ Ø§Ù„Ø´Ø¨ÙƒØ©">Grid View</span>
                 </button>
                 <button type="button" class="btn btn-outline-primary" onclick="toggleView('table')">
                     <i class="bi bi-table me-1"></i>
-                    <span data-en="Table View" data-ar="عرض الجدول">Table View</span>
+                    <span data-en="Table View" data-ar="Ø¹Ø±Ø¶ Ø§Ù„Ø¬Ø¯ÙˆÙ„">Table View</span>
                 </button>
             </div>
             <div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInstanceModal">
+                <button class="btn btn-primary" @if(auth()->user()->type === 'user' && $remainingInstances <= 0) disabled @else data-bs-toggle="modal" data-bs-target="#addInstanceModal" @endif>
                     <i class="bi bi-plus-circle me-2"></i>
-                    <span data-en="Add Instance" data-ar="إضافة مثيل">Add Instance</span>
+                    <span data-en="Add Instance" data-ar="Ø¥Ø¶Ø§ÙØ© Ù…Ø«ÙŠÙ„">Add Instance</span>
                 </button>
                 <button class="btn btn-outline-secondary">
                     <i class="bi bi-search"></i>
@@ -87,6 +90,12 @@
             </div>
         </div>
     </div>
+
+    @if(auth()->user()->type === 'user' && $remainingInstances <= 0)
+        <div class="alert alert-warning">
+            You reached your maximum allowed instances ({{ $instanceLimit }}). Please upgrade your plan to add more.
+        </div>
+    @endif
 
     <!-- Grid View -->
     <div id="gridView" class="row g-3">
@@ -108,14 +117,14 @@
                             <i
                                 class="bi {{ $instance->status == 'connected' ? 'bi-check-circle' : 'bi-exclamation-circle' }} me-1"></i>
                             <span data-en="{{ strtoupper($instance->status) }}"
-                                data-ar="{{ $instance->status == 'connected' ? 'متصل' : 'جار التحميل' }}">{{ strtoupper($instance->status) }}</span>
+                                data-ar="{{ $instance->status == 'connected' ? 'Ù…ØªØµÙ„' : 'Ø¬Ø§Ø± Ø§Ù„ØªØ­Ù…ÙŠÙ„' }}">{{ strtoupper($instance->status) }}</span>
                         </span>
                     </div>
 
                     <div class="instance-label mb-3">
                         <i class="bi bi-tag me-1"></i>
                         <span class="text-muted" data-en="{{ $instance->label ?? 'No Label' }}"
-                            data-ar="{{ $instance->label ?? 'لا يوجد تصنيف' }}">{{ $instance->label ?? 'No Label' }}</span>
+                            data-ar="{{ $instance->label ?? 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ ØªØµÙ†ÙŠÙ' }}">{{ $instance->label ?? 'No Label' }}</span>
                     </div>
 
                     <!-- Stats & Info -->
@@ -129,19 +138,19 @@
                     </div>
 
 
-                    <button class="btn btn-success w-100 mb-2" data-bs-toggle="modal" data-bs-target="#subscribeModal">
+                    <a href="{{ route('subscriptions.index') }}" class="btn btn-success w-100 mb-2">
                         <i class="bi bi-check-circle me-2"></i>
-                        <span data-en="subscribe now" data-ar="اشترك الآن">subscribe now</span>
-                    </button>
+                        <span data-en="subscribe now" data-ar="Ø§Ø´ØªØ±Ùƒ Ø§Ù„Ø¢Ù†">subscribe now</span>
+                    </a>
 
                     <div class="instance-actions mt-3 pt-3 border-top">
                         <a href="{{ route('instance.show', $instance->id) }}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-eye me-1"></i>
-                            <span data-en="View" data-ar="عرض">View</span>
+                            <span data-en="View" data-ar="Ø¹Ø±Ø¶">View</span>
                         </a>
                         <button class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-pencil me-1"></i>
-                            <span data-en="Edit" data-ar="تعديل">Edit</span>
+                            <span data-en="Edit" data-ar="ØªØ¹Ø¯ÙŠÙ„">Edit</span>
                         </button>
                         <form action="{{ route('instance.destroy', $instance->id) }}" method="POST" class="d-inline"
                             onsubmit="return confirm('Are you sure?')">
@@ -149,7 +158,7 @@
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash me-1"></i>
-                                <span data-en="Delete" data-ar="حذف">Delete</span>
+                                <span data-en="Delete" data-ar="Ø­Ø°Ù">Delete</span>
                             </button>
                         </form>
                     </div>
@@ -159,7 +168,7 @@
             <div class="col-12 text-center py-5">
                 <div class="text-muted">
                     <i class="bi bi-phone fs-1 d-block mb-3"></i>
-                    <p data-en="No instances found. Add one to get started!" data-ar="لا توجد مثيلات. أضف واحداً للبدء!">No
+                    <p data-en="No instances found. Add one to get started!" data-ar="Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ø«ÙŠÙ„Ø§Øª. Ø£Ø¶Ù ÙˆØ§Ø­Ø¯Ø§Ù‹ Ù„Ù„Ø¨Ø¯Ø¡!">No
                         instances found. Add one to get started!</p>
                 </div>
             </div>
@@ -172,13 +181,13 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th data-en="Instance" data-ar="المثيل">Instance</th>
-                        <th data-en="Phone" data-ar="الهاتف">Phone</th>
-                        <th data-en="Label" data-ar="التصنيف">Label</th>
-                        <th data-en="Status" data-ar="الحالة">Status</th>
-                        <th data-en="Messages" data-ar="الرسائل">Messages</th>
-                        <th data-en="Campaigns" data-ar="الحملات">Campaigns</th>
-                        <th data-en="Actions" data-ar="الإجراءات">Actions</th>
+                        <th data-en="Instance" data-ar="Ø§Ù„Ù…Ø«ÙŠÙ„">Instance</th>
+                        <th data-en="Phone" data-ar="Ø§Ù„Ù‡Ø§ØªÙ">Phone</th>
+                        <th data-en="Label" data-ar="Ø§Ù„ØªØµÙ†ÙŠÙ">Label</th>
+                        <th data-en="Status" data-ar="Ø§Ù„Ø­Ø§Ù„Ø©">Status</th>
+                        <th data-en="Messages" data-ar="Ø§Ù„Ø±Ø³Ø§Ø¦Ù„">Messages</th>
+                        <th data-en="Campaigns" data-ar="Ø§Ù„Ø­Ù…Ù„Ø§Øª">Campaigns</th>
+                        <th data-en="Actions" data-ar="Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -218,28 +227,28 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" data-en="Add New Instance" data-ar="إضافة مثيل جديد">Add New Instance</h5>
+                    <h5 class="modal-title" data-en="Add New Instance" data-ar="Ø¥Ø¶Ø§ÙØ© Ù…Ø«ÙŠÙ„ Ø¬Ø¯ÙŠØ¯">Add New Instance</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addInstanceForm" method="POST" action="{{ route('instance.store') }}">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label" data-en="Instance Name" data-ar="اسم المثيل">Instance Name</label>
+                            <label class="form-label" data-en="Instance Name" data-ar="Ø§Ø³Ù… Ø§Ù„Ù…Ø«ÙŠÙ„">Instance Name</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" data-en="Label" data-ar="التصنيف">Label</label>
+                            <label class="form-label" data-en="Label" data-ar="Ø§Ù„ØªØµÙ†ÙŠÙ">Label</label>
                             <input type="text" name="label" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" data-en="Phone" data-ar="رقم الموبايل">Phone Number</label>
+                            <label class="form-label" data-en="Phone" data-ar="Ø±Ù‚Ù… Ø§Ù„Ù…ÙˆØ¨Ø§ÙŠÙ„">Phone Number</label>
                             <input type="text" name="phone_number" class="form-control">
                         </div>
                         <div class="modal-footer px-0 pb-0">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-en="Cancel"
-                                data-ar="إلغاء">Cancel</button>
-                            <button type="submit" class="btn btn-primary" data-en="Add Instance" data-ar="إضافة المثيل">Add
+                                data-ar="Ø¥Ù„ØºØ§Ø¡">Cancel</button>
+                            <button type="submit" class="btn btn-primary" data-en="Add Instance" data-ar="Ø¥Ø¶Ø§ÙØ© Ø§Ù„Ù…Ø«ÙŠÙ„">Add
                                 Instance</button>
                         </div>
                     </form>
@@ -252,3 +261,4 @@
 @section('scripts')
     <script src="{{ asset('js/dashboard.js') }}"></script>
 @endsection
+
