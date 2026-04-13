@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold" data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="bi bi-whatsapp"></i><span data-en="Whatsapp" data-ar="واتساب">Whatsapp</span></a></li>
+            <li><a href="friendly.html"><i class="bi bi-chat-heart"></i><span data-en="Friendly" data-ar="الرسائل الودية">Friendly</span></a></li>
+            <li><a href="campaigns.html"><i class="bi bi-megaphone"></i><span data-en="Campaigns" data-ar="الحملات">Campaigns</span></a></li>
+            <li><a href="data.html"><i class="bi bi-database"></i><span data-en="Data" data-ar="البيانات">Data</span></a></li>
+            <li><a href="interactive-message.html"><i class="bi bi-chat-square-text"></i><span data-en="Interactive Message" data-ar="الرسائل التفاعلية">Interactive Message</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="API & INTEGRATION" data-ar="API والدمج">API & INTEGRATION</span></li>
+            <li><a href="api-instance.html"><i class="bi bi-code-square"></i><span data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="MEDIA & FILES" data-ar="الوسائط والملفات">MEDIA & FILES</span></li>
+            <li><a href="media.html"><i class="bi bi-images"></i><span data-en="Media" data-ar="الوسائط">Media</span></a></li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="BILLING" data-ar="الفواتير">BILLING</span></li>
+            <li><a href="subscriptions.html"><i class="bi bi-credit-card"></i><span data-en="Subscription" data-ar="الاشتراك">Subscription</span></a></li>
+            <li><a href="payments.html"><i class="bi bi-wallet2"></i><span data-en="Payment" data-ar="الدفع">Payment</span></a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="logout()">
+                <i class="bi bi-box-arrow-left me-2"></i>
+                <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <button class="btn btn-link d-lg-none" onclick="toggleSidebar()">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <h4 class="mb-0 d-inline-block" data-en="My Profile" data-ar="ملفي الشخصي">My Profile</h4>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleLanguage()">
+                        <i class="bi bi-globe"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=User&background=25D366&color=fff" alt="User" class="rounded-circle" width="35" height="35" id="userAvatarTop">
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="profile.html"><i class="bi bi-person me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-left me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="dashboard-card text-center">
+                    <img src="https://ui-avatars.com/api/?name=User&size=150&background=25D366&color=fff" alt="Profile" class="rounded-circle mb-3" width="150" height="150" id="userAvatar">
+                    <h4 class="mb-1" id="userName">Loading...</h4>
+                    <p class="text-muted mb-3" id="userEmail">user@example.com</p>
+                    <p class="text-muted mb-3" id="userPhone">+20 100 000 0000</p>
+                    <div class="mb-3">
+                        <span class="badge bg-success" id="userPlan">PRO PLAN</span>
+                    </div>
+                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="bi bi-pencil me-2"></i>
+                        <span data-en="Edit Profile" data-ar="تعديل الملف">Edit Profile</span>
+                    </button>
+                </div>
+
+                <div class="dashboard-card mt-3">
+                    <h6 class="mb-3" data-en="Account Status" data-ar="حالة الحساب">Account Status</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span data-en="Member Since" data-ar="عضو منذ">Member Since</span>
+                        <strong id="memberSince">Jan 15, 2024</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span data-en="Subscription Status" data-ar="حالة الاشتراك">Subscription Status</span>
+                        <span class="badge bg-success" id="subStatus">Active</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span data-en="Expires On" data-ar="ينتهي في">Expires On</span>
+                        <strong id="expiryDate">Jan 15, 2025</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="dashboard-card">
+                    <h5 class="mb-3" data-en="Personal Information" data-ar="المعلومات الشخصية">Personal Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Full Name" data-ar="الاسم الكامل">Full Name</label>
+                            <p class="mb-0 fw-semibold" id="fullName">John Doe</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Email Address" data-ar="البريد الإلكتروني">Email Address</label>
+                            <p class="mb-0 fw-semibold" id="emailAddress">john@example.com</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</label>
+                            <p class="mb-0 fw-semibold" id="phoneNumber">+20 100 123 4567</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Country" data-ar="البلد">Country</label>
+                            <p class="mb-0 fw-semibold" id="country">Egypt</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card mt-3">
+                    <h5 class="mb-3" data-en="Subscription Details" data-ar="تفاصيل الاشتراك">Subscription Details</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Current Plan" data-ar="الباقة الحالية">Current Plan</label>
+                            <p class="mb-0"><span class="badge bg-primary" id="currentPlan">Pro</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Billing Cycle" data-ar="دورة الفوترة">Billing Cycle</label>
+                            <p class="mb-0 fw-semibold" id="billingCycle">Monthly</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Max Instances" data-ar="الحد الأقصى للمثيلات">Max Instances</label>
+                            <p class="mb-0 fw-semibold"><span id="currentInstances">3</span> / <span id="maxInstances">5</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small" data-en="Total Paid" data-ar="إجمالي المدفوع">Total Paid</label>
+                            <p class="mb-0 fw-semibold text-success" id="totalPaid">$299.99</p>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="subscriptions.html" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-up-circle me-2"></i>
+                            <span data-en="Upgrade Plan" data-ar="ترقية الباقة">Upgrade Plan</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="dashboard-card mt-3">
+                    <h5 class="mb-3" data-en="Change Password" data-ar="تغيير كلمة المرور">Change Password</h5>
+                    <form id="changePasswordForm">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label" data-en="Current Password" data-ar="كلمة المرور الحالية">Current Password</label>
+                                <input type="password" class="form-control" id="currentPassword" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" data-en="New Password" data-ar="كلمة المرور الجديدة">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" data-en="Confirm Password" data-ar="تأكيد كلمة المرور">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                            <div class="col-12">
+                                <button type="button" class="btn btn-primary" onclick="changePassword()">
+                                    <i class="bi bi-shield-check me-2"></i>
+                                    <span data-en="Change Password" data-ar="تغيير كلمة المرور">Change Password</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-en="Edit Profile" data-ar="تعديل الملف">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Full Name" data-ar="الاسم الكامل">Full Name</label>
+                            <input type="text" class="form-control" id="editFullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Email" data-ar="البريد">Email</label>
+                            <input type="email" class="form-control" id="editEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Phone" data-ar="الهاتف">Phone</label>
+                            <input type="tel" class="form-control" id="editPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Country" data-ar="البلد">Country</label>
+                            <select class="form-select" id="editCountry">
+                                <option value="Egypt">Egypt</option>
+                                <option value="Saudi Arabia">Saudi Arabia</option>
+                                <option value="UAE">UAE</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProfile()" data-en="Save Changes" data-ar="حفظ التغييرات">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instance Details - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold" data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bi bi-whatsapp"></i>
+                    <span data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+                </a>
+            </li>
+            <li>
+                <a href="friendly.html">
+                    <i class="bi bi-chat-heart"></i>
+                    <span data-en="Friendly" data-ar="الرسائل الودية">Friendly</span>
+                </a>
+            </li>
+            <li>
+                <a href="campaigns.html">
+                    <i class="bi bi-megaphone"></i>
+                    <span data-en="Campaigns" data-ar="الحملات">Campaigns</span>
+                </a>
+            </li>
+            <li>
+                <a href="data.html">
+                    <i class="bi bi-database"></i>
+                    <span data-en="Data" data-ar="البيانات">Data</span>
+                </a>
+            </li>
+            <li>
+                <a href="interactive-message.html">
+                    <i class="bi bi-chat-square-text"></i>
+                    <span data-en="Interactive Message" data-ar="الرسائل التفاعلية">Interactive Message</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="API & INTEGRATION" data-ar="API والدمج">API & INTEGRATION</span></li>
+            
+            <li>
+                <a href="api-instance.html">
+                    <i class="bi bi-code-square"></i>
+                    <span data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="MEDIA & FILES" data-ar="الوسائط والملفات">MEDIA & FILES</span></li>
+            
+            <li>
+                <a href="media.html">
+                    <i class="bi bi-images"></i>
+                    <span data-en="Media" data-ar="الوسائط">Media</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="BILLING" data-ar="الفواتير">BILLING</span></li>
+            
+            <li>
+                <a href="subscriptions.html">
+                    <i class="bi bi-credit-card"></i>
+                    <span data-en="Subscription" data-ar="الاشتراك">Subscription</span>
+                </a>
+            </li>
+            <li>
+                <a href="payments.html">
+                    <i class="bi bi-wallet2"></i>
+                    <span data-en="Payment" data-ar="الدفع">Payment</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="logout()">
+                <i class="bi bi-box-arrow-left me-2"></i>
+                <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <a href="dashboard.html" class="btn btn-link text-decoration-none">
+                        <i class="bi bi-arrow-left fs-5"></i>
+                    </a>
+                    <h4 class="mb-0" data-en="Instance Details" data-ar="تفاصيل المثيل">Instance Details</h4>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleLanguage()">
+                        <i class="bi bi-globe"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=User&background=25D366&color=fff" alt="User" class="rounded-circle" width="35" height="35">
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i><span data-en="Profile" data-ar="الملف الشخصي">Profile</span></a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i><span data-en="Settings" data-ar="الإعدادات">Settings</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-left me-2"></i><span data-en="Logout" data-ar="تسجيل الخروج">Logout</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instance Info Row -->
+        <div class="row g-3 mb-4">
+            <!-- QR Code Section -->
+            <div class="col-lg-6">
+                <div class="dashboard-card text-center">
+                    <h5 class="mb-4" data-en="QR Code" data-ar="رمز الاستجابة السريعة">QR Code</h5>
+                    <div class="qr-container mb-3">
+                        <div id="qrPlaceholder" class="qr-placeholder">
+                            <i class="bi bi-qr-code fs-1 text-muted"></i>
+                            <p class="text-muted mt-2" data-en="QR Code will appear here" data-ar="سيظهر رمز QR هنا">QR Code will appear here</p>
+                        </div>
+                    </div>
+                    <span class="badge bg-success px-4 py-2">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <span data-en="WORKING" data-ar="يعمل">WORKING</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Instance Actions -->
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h5 class="mb-3" data-en="Unique Name: instance1734" data-ar="الاسم الفريد: instance1734">Unique Name: instance1734</h5>
+                    
+                    <div class="mb-3">
+                        <span class="badge bg-secondary" data-en="Label" data-ar="التصنيف">Label</span>
+                        <p class="mt-2 mb-0 fw-semibold" data-en="Move Point" data-ar="نقطة التحرك">Move Point</p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="startInstance()">
+                            <i class="bi bi-play-circle me-2"></i>
+                            <span data-en="Start Instance" data-ar="تشغيل المثيل">Start Instance</span>
+                        </button>
+                        <button class="btn btn-success" onclick="restartInstance()">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            <span data-en="Restart Instance" data-ar="إعادة تشغيل المثيل">Restart Instance</span>
+                        </button>
+                        <button class="btn btn-warning" onclick="troubleshootInstance()">
+                            <i class="bi bi-tools me-2"></i>
+                            <span data-en="Troubleshoot" data-ar="استكشاف الأخطاء">Troubleshoot</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="refreshInfo()">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            <span data-en="Refresh Info" data-ar="تحديث المعلومات">Refresh Info</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Delay Settings -->
+        <div class="dashboard-card">
+            <h5 class="mb-3" data-en="Update Delay Settings" data-ar="إعدادات التأخير">Update Delay Settings</h5>
+            <p class="text-muted small mb-4" data-en="Configure the random delay and sleep behavior for your instance. Values are in seconds." data-ar="قم بتكوين التأخير العشوائي وسلوك السكون للمثيل الخاص بك. القيم بالثواني.">Configure the random delay and sleep behavior for your instance. Values are in seconds.</p>
+
+            <form id="delaySettingsForm" onsubmit="updateDelaySettings(event)">
+                <div class="row g-4">
+                    <!-- Delay Between Messages -->
+                    <div class="col-md-6">
+                        <h6 class="mb-3" data-en="Delay Between Messages" data-ar="التأخير بين الرسائل">Delay Between Messages</h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Wait Between Messages (From)" data-ar="الانتظار بين الرسائل (من)">Wait Between Messages (From)</label>
+                            <input type="number" class="form-control" value="3" min="1">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Wait Between Messages (To)" data-ar="الانتظار بين الرسائل (إلى)">Wait Between Messages (To)</label>
+                            <input type="number" class="form-control" value="53" min="1">
+                        </div>
+                    </div>
+
+                    <!-- Sleep -->
+                    <div class="col-md-6">
+                        <h6 class="mb-3" data-en="Sleep" data-ar="السكون">Sleep</h6>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label" data-en="Sleep After (From Messages)" data-ar="السكون بعد (من الرسائل)">Sleep After (From Messages)</label>
+                                <input type="number" class="form-control" value="20" min="1">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" data-en="Sleep Time (From Seconds)" data-ar="وقت السكون (من الثواني)">Sleep Time (From Seconds)</label>
+                                <input type="number" class="form-control" value="60" min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label" data-en="Sleep After (To Messages)" data-ar="السكون بعد (إلى الرسائل)">Sleep After (To Messages)</label>
+                                <input type="number" class="form-control" value="25" min="1">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label" data-en="Sleep Time (To Seconds)" data-ar="وقت السكون (إلى الثواني)">Sleep Time (To Seconds)</label>
+                                <input type="number" class="form-control" value="120" min="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Friendly Message Settings -->
+                <div class="mt-4 p-3 bg-light rounded position-relative">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0" data-en="Friendly Message Settings" data-ar="إعدادات الرسائل الودية">Friendly Message Settings</h6>
+                        <span class="badge bg-success" data-en="Friendly Message Management" data-ar="إدارة الرسائل الودية">Friendly Message Management</span>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" data-en="Send Friendly Every (Messages)" data-ar="إرسال ودي كل (رسائل)">Send Friendly Every (Messages)</label>
+                            <input type="number" class="form-control" value="10000" min="1">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" data-en="Send Friendly Count" data-ar="عدد الإرسال الودي">Send Friendly Count</label>
+                            <input type="number" class="form-control" value="1" min="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary px-5">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <span data-en="Update Settings" data-ar="تحديث الإعدادات">Update Settings</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/script.js"></script>
+    <script src="js/instance-details.js"></script>
+</body>
+</html>

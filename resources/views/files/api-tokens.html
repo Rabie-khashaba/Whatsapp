@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tokens - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold" data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bi bi-whatsapp"></i>
+                    <span data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+                </a>
+            </li>
+            <li>
+                <a href="friendly.html">
+                    <i class="bi bi-chat-heart"></i>
+                    <span data-en="Friendly" data-ar="الرسائل الودية">Friendly</span>
+                </a>
+            </li>
+            <li>
+                <a href="campaigns.html">
+                    <i class="bi bi-megaphone"></i>
+                    <span data-en="Campaigns" data-ar="الحملات">Campaigns</span>
+                </a>
+            </li>
+            <li>
+                <a href="data.html">
+                    <i class="bi bi-database"></i>
+                    <span data-en="Data" data-ar="البيانات">Data</span>
+                </a>
+            </li>
+            <li>
+                <a href="interactive-message.html">
+                    <i class="bi bi-chat-square-text"></i>
+                    <span data-en="Interactive Message" data-ar="الرسائل التفاعلية">Interactive Message</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="API & INTEGRATION" data-ar="API والدمج">API & INTEGRATION</span></li>
+            
+            <li>
+                <a href="api-instance.html" class="active">
+                    <i class="bi bi-code-square"></i>
+                    <span data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="MEDIA & FILES" data-ar="الوسائط والملفات">MEDIA & FILES</span></li>
+            
+            <li>
+                <a href="media.html">
+                    <i class="bi bi-images"></i>
+                    <span data-en="Media" data-ar="الوسائط">Media</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="BILLING" data-ar="الفواتير">BILLING</span></li>
+            
+            <li>
+                <a href="subscriptions.html">
+                    <i class="bi bi-credit-card"></i>
+                    <span data-en="Subscription" data-ar="الاشتراك">Subscription</span>
+                </a>
+            </li>
+            <li>
+                <a href="payments.html">
+                    <i class="bi bi-wallet2"></i>
+                    <span data-en="Payment" data-ar="الدفع">Payment</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="logout()">
+                <i class="bi bi-box-arrow-left me-2"></i>
+                <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0" data-en="API Tokens" data-ar="رموز API">API Tokens</h4>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="refreshTokens()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        <span data-en="Refresh" data-ar="تحديث">Refresh</span>
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="createNewToken()">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        <span data-en="Create New Token" data-ar="إنشاء رمز جديد">Create New Token</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleLanguage()">
+                        <i class="bi bi-globe"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tokens Table -->
+        <div class="dashboard-card">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" class="form-check-input">
+                            </th>
+                            <th data-en="ID" data-ar="المعرف">ID</th>
+                            <th data-en="TOKEN" data-ar="الرمز">TOKEN</th>
+                            <th data-en="EXPIRES" data-ar="ينتهي">EXPIRES</th>
+                            <th data-en="CREATED" data-ar="تاريخ الإنشاء">CREATED</th>
+                            <th data-en="ACTIONS" data-ar="الإجراءات">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tokensTable">
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="form-check-input">
+                            </td>
+                            <td><a href="#" class="text-primary">#157</a></td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <code class="token-display">vUuz...uIeS</code>
+                                    <button class="btn btn-sm btn-link p-0" onclick="copyToken('vUuz...uIeS')" data-en-title="Copy token" data-ar-title="نسخ الرمز">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <div>Jan 24, 2026, 08:30 PM</div>
+                                <small class="text-warning">
+                                    <i class="bi bi-clock me-1"></i>
+                                    <span data-en="5w left" data-ar="متبقي 5 أسابيع">5w left</span>
+                                </small>
+                            </td>
+                            <td>Aug 28, 2025, 08:26 AM</td>
+                            <td>
+                                <button class="btn btn-sm btn-link text-primary" onclick="regenerateToken(157)">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>
+                                    <span data-en="Regenerate" data-ar="إعادة إنشاء">Regenerate</span>
+                                </button>
+                                <button class="btn btn-sm btn-link text-danger" onclick="deleteToken(157)">
+                                    <i class="bi bi-trash me-1"></i>
+                                    <span data-en="Delete" data-ar="حذف">Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                    <span data-en="Show" data-ar="عرض">Show</span>
+                    <select class="form-select form-select-sm d-inline-block w-auto mx-2">
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                    <span data-en="entries" data-ar="إدخالات">entries</span>
+                </div>
+                <div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled"><a class="page-link" href="#">‹</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item disabled"><a class="page-link" href="#">›</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div>
+                    <span data-en="1 - 1 of 1 entries" data-ar="1 - 1 من 1 إدخالات">1 - 1 of 1 entries</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        function createNewToken() {
+            showAlert('Creating new token...', 'info');
+            setTimeout(() => {
+                showAlert('Token created successfully!', 'success');
+            }, 1000);
+        }
+
+        function regenerateToken(id) {
+            if (confirm('Regenerate token #' + id + '? The old token will be invalid.')) {
+                showAlert('Token regenerated successfully!', 'success');
+            }
+        }
+
+        function deleteToken(id) {
+            if (confirm('Delete token #' + id + '?')) {
+                showAlert('Token deleted successfully!', 'success');
+            }
+        }
+
+        function copyToken(token) {
+            navigator.clipboard.writeText(token);
+            showAlert('Token copied to clipboard!', 'success');
+        }
+
+        function refreshTokens() {
+            showAlert('Refreshing tokens...', 'info');
+            setTimeout(() => {
+                showAlert('Tokens refreshed!', 'success');
+            }, 500);
+        }
+    </script>
+</body>
+</html>

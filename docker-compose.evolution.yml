@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  evolution:
+    image: evolution-image:latest # replace with the official image
+    container_name: evolution
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # adjust webhook url to point to your Laravel public endpoint
+      - EV_WEBHOOK_URL=https://your-domain.example/api/evolution/webhook
+    volumes:
+      - ./evolution-data:/data
+
+# Usage:
+# docker-compose -f docker-compose.evolution.yml up -d

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- jsPDF library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .invoice-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .invoice-actions {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .invoice-content {
+            padding: 40px;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #25D366;
+        }
+
+        .company-info h1 {
+            color: #25D366;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .company-info p {
+            color: #6b7280;
+            margin: 3px 0;
+            font-size: 14px;
+        }
+
+        .invoice-meta {
+            text-align: right;
+        }
+
+        .invoice-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .invoice-status {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .invoice-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .detail-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-section p {
+            color: #1f2937;
+            margin: 5px 0;
+            font-size: 15px;
+        }
+
+        .detail-section .strong {
+            font-weight: 600;
+        }
+
+        .invoice-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+        }
+
+        .invoice-table thead {
+            background: #f8f9fa;
+        }
+
+        .invoice-table th {
+            padding: 15px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .invoice-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #1f2937;
+        }
+
+        .invoice-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .invoice-summary {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .summary-table {
+            width: 350px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+
+        .summary-row.subtotal {
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid #25D366;
+            margin-top: 10px;
+            padding-top: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #25D366;
+        }
+
+        .invoice-notes {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .invoice-notes h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .invoice-notes p {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .invoice-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #20ba59;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .invoice-actions {
+                display: none !important;
+            }
+
+            .invoice-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Actions Bar -->
+        <div class="invoice-actions">
+            <div>
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back
+                </a>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <i class="bi bi-printer"></i>
+                    Print
+                </button>
+                <button class="btn btn-primary" onclick="downloadPDF()">
+                    <i class="bi bi-download"></i>
+                    Download PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Invoice Content -->
+        <div class="invoice-content" id="invoiceContent">
+            <!-- Header -->
+            <div class="invoice-header">
+                <div class="company-info">
+                    <h1>WhatsApp Platform</h1>
+                    <p>123 Business Street</p>
+                    <p>Cairo, Egypt</p>
+                    <p>Phone: +20 100 000 0000</p>
+                    <p>Email: support@whatsapp-platform.com</p>
+                </div>
+                <div class="invoice-meta">
+                    <div class="invoice-number" id="invoiceNumber">INV-001</div>
+                    <div class="invoice-status" id="invoiceStatus">PAID</div>
+                    <p style="margin-top: 15px; color: #6b7280;">
+                        <strong>Date:</strong> <span id="invoiceDate">Dec 15, 2024</span>
+                    </p>
+                    <p style="color: #6b7280;">
+                        <strong>Due Date:</strong> <span id="dueDate">Dec 15, 2024</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Customer & Payment Details -->
+            <div class="invoice-details">
+                <div class="detail-section">
+                    <h3>Bill To</h3>
+                    <p class="strong" id="customerName">Ahmed Mohamed Ali</p>
+                    <p id="customerEmail">ahmed.ali@example.com</p>
+                    <p id="customerPhone">+20 100 123 4567</p>
+                    <p id="customerAddress">Cairo, Egypt</p>
+                </div>
+                <div class="detail-section">
+                    <h3>Payment Details</h3>
+                    <p><strong>Payment Method:</strong> <span id="paymentMethod">Vodafone Cash</span></p>
+                    <p><strong>Transaction ID:</strong> <span id="transactionId">VF123456789</span></p>
+                    <p><strong>Payment Date:</strong> <span id="paymentDate">Dec 15, 2024</span></p>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Plan</th>
+                        <th>Period</th>
+                        <th style="text-align: right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceItems">
+                    <tr>
+                        <td>WhatsApp Campaign Platform Subscription</td>
+                        <td><span class="badge bg-primary">Pro</span></td>
+                        <td>Monthly</td>
+                        <td style="text-align: right; font-weight: 600;">$29.99</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Summary -->
+            <div class="invoice-summary">
+                <div class="summary-table">
+                    <div class="summary-row subtotal">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">$29.99</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (0%):</span>
+                        <span id="tax">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="total">$29.99</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="invoice-notes">
+                <h3>Notes</h3>
+                <p>Thank you for your business! Your subscription has been activated and will remain active until the expiry date. For any questions or concerns, please contact our support team.</p>
+            </div>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <p>This is a computer-generated invoice and does not require a signature.</p>
+                <p>&copy; 2024 WhatsApp Campaign Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get invoice ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const invoiceId = urlParams.get('id') || 'INV-001';
+
+        // Sample invoice data (Replace with API call)
+        const invoiceData = {
+            'INV-001': {
+                number: 'INV-001',
+                status: 'paid',
+                date: '2024-12-15',
+                dueDate: '2024-12-15',
+                customer: {
+                    name: 'Ahmed Mohamed Ali',
+                    email: 'ahmed.ali@example.com',
+                    phone: '+20 100 123 4567',
+                    address: 'Cairo, Egypt'
+                },
+                payment: {
+                    method: 'Vodafone Cash',
+                    transactionId: 'VF123456789',
+                    date: '2024-12-15'
+                },
+                items: [
+                    {
+                        description: 'WhatsApp Campaign Platform Subscription',
+                        plan: 'Pro',
+                        period: 'Monthly',
+                        amount: 29.99
+                    }
+                ],
+                subtotal: 29.99,
+                tax: 0.00,
+                total: 29.99
+            }
+        };
+
+        // Load invoice data
+        function loadInvoice() {
+            const invoice = invoiceData[invoiceId];
+            if (!invoice) {
+                alert('Invoice not found!');
+                return;
+            }
+
+            // Update invoice details
+            document.getElementById('invoiceNumber').textContent = invoice.number;
+            document.getElementById('invoiceStatus').textContent = invoice.status.toUpperCase();
+            document.getElementById('invoiceDate').textContent = formatDate(invoice.date);
+            document.getElementById('dueDate').textContent = formatDate(invoice.dueDate);
+
+            // Update customer info
+            document.getElementById('customerName').textContent = invoice.customer.name;
+            document.getElementById('customerEmail').textContent = invoice.customer.email;
+            document.getElementById('customerPhone').textContent = invoice.customer.phone;
+            document.getElementById('customerAddress').textContent = invoice.customer.address;
+
+            // Update payment info
+            document.getElementById('paymentMethod').textContent = invoice.payment.method;
+            document.getElementById('transactionId').textContent = invoice.payment.transactionId;
+            document.getElementById('paymentDate').textContent = formatDate(invoice.payment.date);
+
+            // Update summary
+            document.getElementById('subtotal').textContent = `$${invoice.subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${invoice.tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${invoice.total.toFixed(2)}`;
+
+            // Update status color
+            const statusEl = document.getElementById('invoiceStatus');
+            if (invoice.status === 'paid') {
+                statusEl.style.background = '#d4edda';
+                statusEl.style.color = '#155724';
+            } else {
+                statusEl.style.background = '#fff3cd';
+                statusEl.style.color = '#856404';
+            }
+        }
+
+        // Download PDF
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById('invoiceContent');
+
+            try {
+                // Create canvas from HTML
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+                const imgX = (pdfWidth - imgWidth * ratio) / 2;
+                const imgY = 0;
+
+                pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+                pdf.save(`${invoiceId}.pdf`);
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try printing instead.');
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        // Load invoice on page load
+        document.addEventListener('DOMContentLoaded', loadInvoice);
+    </script>
+</body>
+</html>

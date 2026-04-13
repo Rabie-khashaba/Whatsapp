@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaigns - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold" data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bi bi-whatsapp"></i>
+                    <span data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+                </a>
+            </li>
+            <li>
+                <a href="friendly.html">
+                    <i class="bi bi-chat-heart"></i>
+                    <span data-en="Friendly" data-ar="الرسائل الودية">Friendly</span>
+                </a>
+            </li>
+            <li>
+                <a href="campaigns.html" class="active">
+                    <i class="bi bi-megaphone"></i>
+                    <span data-en="Campaigns" data-ar="الحملات">Campaigns</span>
+                </a>
+            </li>
+            <li>
+                <a href="data.html">
+                    <i class="bi bi-database"></i>
+                    <span data-en="Data" data-ar="البيانات">Data</span>
+                </a>
+            </li>
+            <li>
+                <a href="interactive-message.html">
+                    <i class="bi bi-chat-square-text"></i>
+                    <span data-en="Interactive Message" data-ar="الرسائل التفاعلية">Interactive Message</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="API & INTEGRATION" data-ar="API والدمج">API & INTEGRATION</span></li>
+            
+            <li>
+                <a href="api-instance.html">
+                    <i class="bi bi-code-square"></i>
+                    <span data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="MEDIA & FILES" data-ar="الوسائط والملفات">MEDIA & FILES</span></li>
+            
+            <li>
+                <a href="media.html">
+                    <i class="bi bi-images"></i>
+                    <span data-en="Media" data-ar="الوسائط">Media</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="BILLING" data-ar="الفواتير">BILLING</span></li>
+            
+            <li>
+                <a href="subscriptions.html">
+                    <i class="bi bi-credit-card"></i>
+                    <span data-en="Subscription" data-ar="الاشتراك">Subscription</span>
+                </a>
+            </li>
+            <li>
+                <a href="payments.html">
+                    <i class="bi bi-wallet2"></i>
+                    <span data-en="Payment" data-ar="الدفع">Payment</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="logout()">
+                <i class="bi bi-box-arrow-left me-2"></i>
+                <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0" data-en="Campaigns" data-ar="الحملات">Campaigns</h4>
+                    <p class="text-muted mb-0 small" data-en="Manage and monitor all your campaigns here." data-ar="قم بإدارة ومراقبة جميع حملاتك هنا.">Manage and monitor all your campaigns here.</p>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleLanguage()">
+                        <i class="bi bi-globe"></i>
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCampaignModal">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <span data-en="Create Campaign" data-ar="إنشاء حملة">Create Campaign</span>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=User&background=25D366&color=fff" alt="User" class="rounded-circle" width="35" height="35">
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i><span data-en="Profile" data-ar="الملف الشخصي">Profile</span></a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i><span data-en="Settings" data-ar="الإعدادات">Settings</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-left me-2"></i><span data-en="Logout" data-ar="تسجيل الخروج">Logout</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;">
+                        <i class="bi bi-flag"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1" data-en="Total Campaigns" data-ar="إجمالي الحملات">Total Campaigns</p>
+                        <h3 class="mb-0 fw-bold" id="totalCampaigns">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1" data-en="Total Messages" data-ar="إجمالي الرسائل">Total Messages</p>
+                        <h3 class="mb-0 fw-bold" id="totalMessages">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(251, 191, 36, 0.1); color: #FBBF24;">
+                        <i class="bi bi-send"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1" data-en="Sent Messages" data-ar="الرسائل المرسلة">Sent Messages</p>
+                        <h3 class="mb-0 fw-bold" id="sentMessages">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="dashboard-card stats-card">
+                    <div class="stats-icon" style="background: rgba(251, 146, 60, 0.1); color: #FB923C;">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted mb-1" data-en="Pending Messages" data-ar="الرسائل المعلقة">Pending Messages</p>
+                        <h3 class="mb-0 fw-bold" id="pendingMessages">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="dashboard-card mb-3">
+            <ul class="nav nav-tabs border-0" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#allTab" type="button" role="tab">
+                        <span data-en="All" data-ar="الكل">All</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#notStartedTab" type="button" role="tab">
+                        <span data-en="Not Started" data-ar="لم تبدأ">Not Started</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#scheduledTab" type="button" role="tab">
+                        <span data-en="Scheduled" data-ar="مجدولة">Scheduled</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activeTab" type="button" role="tab">
+                        <span data-en="Active" data-ar="نشطة">Active</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pausedTab" type="button" role="tab">
+                        <span data-en="Paused" data-ar="متوقفة">Paused</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#finishedTab" type="button" role="tab">
+                        <span data-en="Finished" data-ar="منتهية">Finished</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tabs Content -->
+        <div class="tab-content">
+            <!-- All Tab -->
+            <div class="tab-pane fade show active" id="allTab" role="tabpanel">
+                <div class="dashboard-card">
+                    <div id="campaignsList" class="empty-state">
+                        <i class="bi bi-megaphone-fill fs-1 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0" data-en="No campaigns with status: not_started" data-ar="لا توجد حملات بحالة: لم تبدأ">No campaigns with status: not_started</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Not Started Tab -->
+            <div class="tab-pane fade" id="notStartedTab" role="tabpanel">
+                <div class="dashboard-card">
+                    <div class="empty-state">
+                        <i class="bi bi-pause-circle fs-1 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0" data-en="No campaigns with status: not_started" data-ar="لا توجد حملات بحالة: لم تبدأ">No campaigns with status: not_started</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheduled Tab -->
+            <div class="tab-pane fade" id="scheduledTab" role="tabpanel">
+                <div class="dashboard-card">
+                    <div class="empty-state">
+                        <i class="bi bi-clock-history fs-1 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0" data-en="No campaigns with status: scheduled" data-ar="لا توجد حملات بحالة: مجدولة">No campaigns with status: scheduled</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Tab -->
+            <div class="tab-pane fade" id="activeTab" role="tabpanel">
+                <div class="dashboard-card">
+                    <div class="empty-state">
+                        <i class="bi bi-play-circle fs-1 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0" data-en="No campaigns with status: active" data-ar="لا توجد حملات بحالة: نشطة">No campaigns with status: active</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paused Tab -->
+            <div class="tab-pane fade" id="pausedTab" role="tabpanel">
+                <div class="dashboard-card">
+                    <div class="empty-state">
+                        <i class="bi bi-pause-circle fs-1 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0" data-en="No campaigns with status: paused" data-ar="لا توجد حملات بحالة: متوقفة">No campaigns with status: paused</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Finished Tab -->
+            <div class="tab-pane fade" id="finishedTab" role="tabpanel">
+                <div class="dashboard-card">
+                    <div class="empty-state">
+                        <i class="bi bi-check-circle fs-1 text-muted"></i>
+                        <p class="text-muted mt-3 mb-0" data-en="No campaigns with status: finished" data-ar="لا توجد حملات بحالة: منتهية">No campaigns with status: finished</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Create Campaign Modal -->
+    <div class="modal fade" id="createCampaignModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-en="Create New Campaign" data-ar="إنشاء حملة جديدة">Create New Campaign</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createCampaignForm">
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Campaign Name" data-ar="اسم الحملة">Campaign Name</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Select Instance" data-ar="اختر المثيل">Select Instance</label>
+                            <select class="form-select" required>
+                                <option value="">Select instance...</option>
+                                <option value="instance1734">instance1734</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Phone List" data-ar="قائمة الأرقام">Phone List</label>
+                            <select class="form-select" required>
+                                <option value="">Select phone list...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" data-en="Message" data-ar="الرسالة">Message</label>
+                            <textarea class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" data-en="Start Date" data-ar="تاريخ البدء">Start Date</label>
+                                <input type="datetime-local" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" data-en="End Date" data-ar="تاريخ الانتهاء">End Date</label>
+                                <input type="datetime-local" class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="createCampaign()" data-en="Create Campaign" data-ar="إنشاء الحملة">Create Campaign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/script.js"></script>
+    <script src="js/campaigns.js"></script>
+</body>
+</html>

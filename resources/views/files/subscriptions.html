@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Subscriptions - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold" data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bi bi-whatsapp"></i>
+                    <span data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+                </a>
+            </li>
+            <li>
+                <a href="friendly.html">
+                    <i class="bi bi-chat-heart"></i>
+                    <span data-en="Friendly" data-ar="الرسائل الودية">Friendly</span>
+                </a>
+            </li>
+            <li>
+                <a href="campaigns.html">
+                    <i class="bi bi-megaphone"></i>
+                    <span data-en="Campaigns" data-ar="الحملات">Campaigns</span>
+                </a>
+            </li>
+            <li>
+                <a href="data.html">
+                    <i class="bi bi-database"></i>
+                    <span data-en="Data" data-ar="البيانات">Data</span>
+                </a>
+            </li>
+            <li>
+                <a href="interactive-message.html">
+                    <i class="bi bi-chat-square-text"></i>
+                    <span data-en="Interactive Message" data-ar="الرسائل التفاعلية">Interactive Message</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="API & INTEGRATION" data-ar="API والدمج">API & INTEGRATION</span></li>
+            
+            <li>
+                <a href="api-instance.html">
+                    <i class="bi bi-code-square"></i>
+                    <span data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="MEDIA & FILES" data-ar="الوسائط والملفات">MEDIA & FILES</span></li>
+            
+            <li>
+                <a href="media.html">
+                    <i class="bi bi-images"></i>
+                    <span data-en="Media" data-ar="الوسائط">Media</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="BILLING" data-ar="الفواتير">BILLING</span></li>
+            
+            <li>
+                <a href="subscriptions.html" class="active">
+                    <i class="bi bi-credit-card"></i>
+                    <span data-en="Subscription" data-ar="الاشتراك">Subscription</span>
+                </a>
+            </li>
+            <li>
+                <a href="payments.html">
+                    <i class="bi bi-wallet2"></i>
+                    <span data-en="Payment" data-ar="الدفع">Payment</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="logout()">
+                <i class="bi bi-box-arrow-left me-2"></i>
+                <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="dashboard.html" class="btn btn-link text-decoration-none p-0">
+                        <i class="bi bi-arrow-left fs-5"></i>
+                    </a>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="search-box d-none d-md-block">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search here..." data-en-placeholder="Search here..." data-ar-placeholder="ابحث هنا...">
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleLanguage()">
+                        <i class="bi bi-globe"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=User&background=25D366&color=fff" alt="User" class="rounded-circle" width="35" height="35">
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i><span data-en="Profile" data-ar="الملف الشخصي">Profile</span></a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i><span data-en="Settings" data-ar="الإعدادات">Settings</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-left me-2"></i><span data-en="Logout" data-ar="تسجيل الخروج">Logout</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Subscriptions -->
+        <div class="dashboard-card mb-3">
+            <h4 class="mb-0" data-en="My Subscriptions" data-ar="اشتراكاتي">My Subscriptions</h4>
+        </div>
+
+        <!-- Subscription Summary -->
+        <div class="dashboard-card mb-4">
+            <h5 class="mb-3" data-en="Subscription Summary" data-ar="ملخص الاشتراك">Subscription Summary</h5>
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <div class="stat-box">
+                        <div class="text-muted small mb-1" data-en="Total" data-ar="الإجمالي">Total</div>
+                        <h3 class="mb-0">2</h3>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stat-box bg-success bg-opacity-10">
+                        <div class="text-muted small mb-1" data-en="Active" data-ar="نشط">Active</div>
+                        <h3 class="mb-0 text-success">1</h3>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stat-box bg-danger bg-opacity-10">
+                        <div class="text-muted small mb-1" data-en="Expired" data-ar="منتهي">Expired</div>
+                        <h3 class="mb-0 text-danger">1</h3>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stat-box bg-warning bg-opacity-10">
+                        <div class="text-muted small mb-1" data-en="Pending" data-ar="معلق">Pending</div>
+                        <h3 class="mb-0 text-warning">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stat-box bg-info bg-opacity-10">
+                        <div class="text-muted small mb-1" data-en="Trial" data-ar="تجريبي">Trial</div>
+                        <h3 class="mb-0 text-info">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="stat-box bg-secondary bg-opacity-10">
+                        <div class="text-muted small mb-1" data-en="Business" data-ar="تجاري">Business</div>
+                        <h3 class="mb-0 text-secondary">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Tabs -->
+        <div class="dashboard-card mb-3">
+            <ul class="nav nav-tabs border-0" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#personalTab">
+                        <span data-en="Personal (2)" data-ar="شخصي (2)">Personal (2)</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#businessTab">
+                        <span data-en="Business (0)" data-ar="تجاري (0)">Business (0)</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Subscription Content -->
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="personalTab">
+                <div class="dashboard-card">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-en="PLAN NAME" data-ar="اسم الخطة">PLAN NAME</th>
+                                    <th data-en="TYPE" data-ar="النوع">TYPE</th>
+                                    <th data-en="STATUS" data-ar="الحالة">STATUS</th>
+                                    <th data-en="PERIOD" data-ar="المدة">PERIOD</th>
+                                    <th data-en="START DATE" data-ar="تاريخ البدء">START DATE</th>
+                                    <th data-en="END DATE" data-ar="تاريخ الانتهاء">END DATE</th>
+                                    <th data-en="PRICE" data-ar="السعر">PRICE</th>
+                                    <th data-en="TAGS" data-ar="الوسوم">TAGS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">Api</div>
+                                        <small class="text-muted">instance1734</small>
+                                    </td>
+                                    <td>API</td>
+                                    <td><span class="badge bg-success" data-en="Active" data-ar="نشط">Active</span></td>
+                                    <td data-en="1 months" data-ar="شهر واحد">1 months</td>
+                                    <td>25 Dec 2025</td>
+                                    <td>25 Jan 2026</td>
+                                    <td>500 Egyptian Pound</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">Api</div>
+                                        <small class="text-muted">instance1734</small>
+                                    </td>
+                                    <td>API</td>
+                                    <td><span class="badge bg-danger" data-en="Expired" data-ar="منتهي">Expired</span></td>
+                                    <td data-en="1 months" data-ar="شهر واحد">1 months</td>
+                                    <td>27 Aug 2025</td>
+                                    <td>27 Sep 2025</td>
+                                    <td>350 Egyptian Pound</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="businessTab">
+                <div class="dashboard-card">
+                    <div class="empty-state">
+                        <i class="bi bi-briefcase fs-1 text-muted"></i>
+                        <p class="text-muted mt-2" data-en="No business subscriptions" data-ar="لا توجد اشتراكات تجارية">No business subscriptions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

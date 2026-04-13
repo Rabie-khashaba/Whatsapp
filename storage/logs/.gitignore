@@ -1,0 +1,6 @@
+*
+!.gitignore
+/baileys-server/node_modules
+/baileys-server/auth_*
+/baileys-server/*.log
+/baileys-server/baileys_store.json

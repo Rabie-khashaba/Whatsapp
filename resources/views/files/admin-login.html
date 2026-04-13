@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="auth-page d-flex align-items-center justify-content-center min-vh-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="auth-card">
+                        <div class="text-center mb-4">
+                            <img src="images/logo.png" alt="Logo" class="logo mb-3">
+                            <h3 class="fw-bold text-danger" data-en="Admin Panel" data-ar="لوحة الإدارة">Admin Panel</h3>
+                            <p class="text-muted" data-en="Login to access admin dashboard" data-ar="تسجيل الدخول للوصول للوحة الإدارة">Login to access admin dashboard</p>
+                        </div>
+
+                        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                            <div class="mb-3">
+                                <label class="form-label" data-en="Username" data-ar="اسم المستخدم">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-person"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="adminUsername" required data-en-placeholder="Enter username" data-ar-placeholder="أدخل اسم المستخدم">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" data-en="Password" data-ar="كلمة المرور">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control" id="adminPassword" required data-en-placeholder="Enter password" data-ar-placeholder="أدخل كلمة المرور">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe" data-en="Remember me" data-ar="تذكرني">Remember me</label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                <span data-en="Login" data-ar="تسجيل الدخول">Login</span>
+                            </button>
+                        </form>
+
+                        <div class="text-center mt-4">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"></i>
+                                <span data-en="Secure Admin Access" data-ar="دخول آمن للمسؤولين">Secure Admin Access</span>
+                            </small>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <a href="login.html" class="text-muted small">
+                                <i class="bi bi-arrow-left me-1"></i>
+                                <span data-en="Back to Customer Login" data-ar="العودة لتسجيل دخول العملاء">Back to Customer Login</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Demo Credentials Info -->
+                    <div class="alert alert-info mt-3 text-center">
+                        <small>
+                            <strong>Demo Credentials:</strong><br>
+                            Username: <code>admin</code> | Password: <code>admin123</code>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/admin-auth.js"></script>
+</body>
+</html>
