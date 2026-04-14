@@ -35,5 +35,15 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
 }
 

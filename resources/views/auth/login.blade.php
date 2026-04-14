@@ -53,40 +53,32 @@
                     @endif
 
                     <!-- Login Form -->
-                    <form method="POST" action="{{ route('send.otp') }}">
+                    <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <!-- Phone Number -->
                         <div class="mb-4">
                             <label for="loginPhone" class="form-label" data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</label>
                             <div class="input-group">
-                                <select name="country_code" class="form-select country-code" id="loginCountryCode" style="max-width: 120px;">
-                                    <option value="+20" selected>🇪🇬 +20</option>
-                                    <option value="+966">🇸🇦 +966</option>
-                                    <option value="+971">🇦🇪 +971</option>
-                                    <option value="+965">🇰🇼 +965</option>
-                                    <option value="+974">🇶🇦 +974</option>
-                                    <option value="+968">🇴🇲 +968</option>
-                                    <option value="+973">🇧🇭 +973</option>
-                                    <option value="+962">🇯🇴 +962</option>
-                                    <option value="+961">🇱🇧 +961</option>
-                                    <option value="+212">🇲🇦 +212</option>
-                                    <option value="+213">🇩🇿 +213</option>
-                                    <option value="+216">🇹🇳 +216</option>
-                                    <option value="+1">🇺🇸 +1</option>
-                                    <option value="+44">🇬🇧 +44</option>
-                                </select>
-                                <input type="tel" class="form-control" name="phone" id="loginPhone" required 
-                                       data-en-placeholder="Phone number" 
+                                <input type="tel" class="form-control" name="phone" id="loginPhone" required
+                                       data-en-placeholder="Phone number"
                                        data-ar-placeholder="رقم الهاتف"
                                        placeholder="Phone number">
                             </div>
-                            <small class="text-muted" data-en="We'll send you an OTP to verify" data-ar="سنرسل لك رمز التحقق">We'll send you an OTP to verify</small>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-4">
+                            <label for="loginPassword" class="form-label" data-en="Password" data-ar="كلمة المرور">Password</label>
+                            <input type="password" class="form-control" name="password" id="loginPassword" required
+                                   data-en-placeholder="Password"
+                                   data-ar-placeholder="كلمة المرور"
+                                   placeholder="Password">
                         </div>
 
                         <!-- Submit Button -->
                         <button type="submit" class="btn btn-primary w-100 mb-3">
                             <i class="bi bi-box-arrow-in-right me-2"></i>
-                            <span data-en="Send OTP" data-ar="إرسال رمز التحقق">Send OTP</span>
+                            <span data-en="Login" data-ar="تسجيل الدخول">Login</span>
                         </button>
 
                         <!-- Register Link -->

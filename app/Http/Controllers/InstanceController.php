@@ -32,9 +32,15 @@ class InstanceController extends Controller
         $totalMessages = MessageLog::whereIn('instance_id', $instanceIds)->count();
         $totalCampaigns = 0;
         $instanceLimit = 20;
+        if ($user->type === 'user') {
+            $instanceLimit = (int) optional($user->customer)->max_instances;
+            if ($instanceLimit < 0) {
+                $instanceLimit = 0;
+            }
+        }
         $remainingInstances = max(0, $instanceLimit - $instances->count());
 
-        return view('whatsapp.dashboard', compact('instances', 'totalMessages', 'totalCampaigns', 'remainingInstances'));
+        return view('whatsapp.dashboard', compact('instances', 'totalMessages', 'totalCampaigns', 'remainingInstances', 'instanceLimit'));
     }
 
     /**
@@ -78,6 +84,24 @@ class InstanceController extends Controller
             'phone_number' => 'nullable|regex:/^[0-9]{10,15}$/'
         ]);
 
+        $user = Auth::user();
+        if ($user->type === 'user') {
+            $instanceLimit = (int) optional($user->customer)->max_instances;
+            $currentInstancesCount = Instance::where('user_id', $user->id)->count();
+
+            if ($instanceLimit <= 0) {
+                return back()->withErrors([
+                    'error' => 'Your subscription does not allow creating instances. Please contact support.'
+                ])->withInput();
+            }
+
+            if ($currentInstancesCount >= $instanceLimit) {
+                return back()->withErrors([
+                    'error' => "You reached your instance limit ({$instanceLimit}). Upgrade your plan to add more."
+                ])->withInput();
+            }
+        }
+
         // ✅ التحقق من وجود الرقم مسبقاً
         if ($request->phone_number) {
             $exists = Instance::where('phone_number', $request->phone_number)->exists();
@@ -104,7 +128,7 @@ class InstanceController extends Controller
 
         try {
             $instance = Instance::create([
-                'user_id' => Auth::id(),
+                'user_id' => $user->id,
                 'name' => $request->name,
                 'label' => $request->label,
                 'phone_number' => $request->phone_number,

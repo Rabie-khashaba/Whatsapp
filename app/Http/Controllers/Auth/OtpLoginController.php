@@ -23,6 +23,33 @@ class OtpLoginController extends Controller
         return view('auth.login');
     }
 
+    public function login(Request $request)
+    {
+        $validated = $request->validate([
+            'phone' => 'required|regex:/^[0-9]{10,11}$/',
+            'password' => 'required|string|min:6',
+        ], [
+            'phone.required' => 'رقم الهاتف مطلوب',
+            'phone.regex' => 'رقم الهاتف يجب أن يكون 10-11 رقم',
+            'password.required' => 'كلمة المرور مطلوبة',
+            'password.min' => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل',
+        ]);
+
+        $credentials = [
+            'phone' => $validated['phone'],
+            'password' => $validated['password'],
+        ];
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('dashboard'));
+        }
+
+        return back()->withErrors([
+            'phone' => 'بيانات الدخول غير صحيحة. تحقق من رقم الهاتف وكلمة المرور.',
+        ])->withInput();
+    }
+
     public function sendOtp(Request $request)
     {
         // 1. Log كل حاجة من البداية

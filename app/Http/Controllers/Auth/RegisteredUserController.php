@@ -33,6 +33,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
             'country_code' => ['required', 'string', 'max:5'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
         // التحقق إذا كان المستخدم موجود بالفعل
@@ -72,6 +73,7 @@ class RegisteredUserController extends Controller
             'otp_name' => $request->name,
             'otp_email' => $request->email,
             'otp_country_code' => $request->country_code,
+            'otp_password' => $request->password,
         ]);
 
         return redirect()->route('verify.otp.form');
@@ -149,7 +151,7 @@ class RegisteredUserController extends Controller
             'email' => session('otp_email'),
             'phone' => session('otp_phone'),
             'country_code' => session('otp_country_code'),
-            'password' => Hash::make(\Illuminate\Support\Str::random(16)),
+            'password' => Hash::make(session('otp_password')),
         ]);
 
         Customer::create([
@@ -161,7 +163,7 @@ class RegisteredUserController extends Controller
         ]);
 
         // تنظيف البيانات من session
-        session()->forget(['otp_phone', 'otp_name', 'otp_email', 'otp_country_code']);
+        session()->forget(['otp_phone', 'otp_name', 'otp_email', 'otp_country_code', 'otp_password']);
 
         // تسجيل الدخول مباشرة
         Auth::login($user);

@@ -7,7 +7,7 @@
 
         <ul class="sidebar-menu">
             <li>
-                <a href="{{ route('dashboard')}}" class="active">
+                <a href="{{ route('dashboard')}}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <i class="bi bi-whatsapp"></i>
                     <span data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
                 </a>
@@ -61,13 +61,13 @@
             <li class="menu-header"><span data-en="BILLING" data-ar="الفواتير">BILLING</span></li>
             
             <li>
-                <a href="subscriptions.html">
+                <a href="{{ route('subscriptions.index') }}" class="{{ request()->routeIs('subscriptions.index') ? 'active' : '' }}">
                     <i class="bi bi-credit-card"></i>
                     <span data-en="Subscription" data-ar="الاشتراك">Subscription</span>
                 </a>
             </li>
             <li>
-                <a href="payments.html">
+                <a href="{{ route('payments.index') }}" class="{{ request()->routeIs('payments.index') ? 'active' : '' }}">
                     <i class="bi bi-wallet2"></i>
                     <span data-en="Payment" data-ar="الدفع">Payment</span>
                 </a>
@@ -84,3 +84,4 @@
         </form>
         </div>
     </aside>
+
