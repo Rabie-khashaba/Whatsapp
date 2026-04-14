@@ -11,6 +11,7 @@
         'active' => 'success',
         'pending' => 'warning text-dark',
         'expired' => 'danger',
+        'cancelled' => 'secondary',
         default => 'secondary',
     };
     $expiryDate = $subscription?->end_date ?? $customer?->expiry_date;

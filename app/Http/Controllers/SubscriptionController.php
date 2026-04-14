@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Plan;
 use App\Models\Subscription;
+use App\Services\SubscriptionStatusService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,8 @@ class SubscriptionController extends Controller
                 'error' => 'No customer profile found for your account.',
             ]);
         }
+
+        $customer = app(SubscriptionStatusService::class)->syncCustomer($customer);
 
         $subscriptions = Subscription::query()
             ->where('customer_id', $customer->id)

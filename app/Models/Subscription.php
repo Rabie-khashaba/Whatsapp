@@ -17,12 +17,16 @@ class Subscription extends Model
         'end_date',
         'price',
         'billing_cycle',
+        'expiring_notified_at',
+        'expired_notified_at',
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
         'price' => 'decimal:2',
+        'expiring_notified_at' => 'datetime',
+        'expired_notified_at' => 'datetime',
     ];
 
     public function customer()

@@ -17,7 +17,7 @@
 @endif
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="dashboard-card stats-card">
             <div class="stats-icon" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;">
                 <i class="bi bi-people"></i>
@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="dashboard-card stats-card">
             <div class="stats-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;">
                 <i class="bi bi-person-check"></i>
@@ -39,7 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="dashboard-card stats-card">
             <div class="stats-icon" style="background: rgba(251, 191, 36, 0.1); color: #FBBF24;">
                 <i class="bi bi-clock-history"></i>
@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div class="dashboard-card stats-card">
             <div class="stats-icon" style="background: rgba(239, 68, 68, 0.1); color: #EF4444;">
                 <i class="bi bi-person-x"></i>
@@ -58,6 +58,17 @@
             <div class="flex-grow-1">
                 <p class="text-muted mb-1">Expired</p>
                 <h3 class="mb-0 fw-bold">{{ $expiredCustomers }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="dashboard-card stats-card">
+            <div class="stats-icon" style="background: rgba(107, 114, 128, 0.1); color: #6B7280;">
+                <i class="bi bi-x-circle"></i>
+            </div>
+            <div class="flex-grow-1">
+                <p class="text-muted mb-1">Cancelled</p>
+                <h3 class="mb-0 fw-bold">{{ $cancelledCustomers }}</h3>
             </div>
         </div>
     </div>
@@ -77,6 +88,7 @@
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
                     <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expired</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                 </select>
             </div>
             <div class="col-md-2">
@@ -133,7 +145,7 @@
                     <td>{{ $customer->phone }}</td>
                     <td><span class="badge bg-secondary">{{ $customer->plan }}</span></td>
                     <td>
-                        <span class="badge {{ $customer->status === 'active' ? 'bg-success' : ($customer->status === 'pending' ? 'bg-warning text-dark' : 'bg-danger') }}">
+                        <span class="badge {{ $customer->status === 'active' ? 'bg-success' : ($customer->status === 'pending' ? 'bg-warning text-dark' : ($customer->status === 'cancelled' ? 'bg-secondary' : 'bg-danger')) }}">
                             {{ ucfirst($customer->status) }}
                         </span>
                     </td>
@@ -182,6 +194,7 @@
                             <option value="active" {{ old('status', $customer->status) === 'active' ? 'selected' : '' }}>Active</option>
                             <option value="pending" {{ old('status', $customer->status) === 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="expired" {{ old('status', $customer->status) === 'expired' ? 'selected' : '' }}>Expired</option>
+                            <option value="cancelled" {{ old('status', $customer->status) === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                         </select>
                     </div>
                     <div class="mb-3">

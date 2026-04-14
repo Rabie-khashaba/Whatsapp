@@ -26,6 +26,20 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
+
+    @if($errors->has('subscription'))
+        <div class="alert alert-warning alert-dismissible fade show d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <strong>Subscription expired.</strong>
+                <div>{{ $errors->first('subscription') }}</div>
+            </div>
+            <a href="{{ route('subscriptions.index') }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-arrow-repeat me-1"></i>
+                Renew Now
+            </a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="dashboard-card stats-card">

@@ -42,8 +42,8 @@
                 <div class="text-center mb-3">
                     <span class="badge bg-{{ $plan['color'] }} mb-2 px-3 py-2">{{ strtoupper($plan['name']) }}</span>
                     <h4 class="text-muted mb-2">{{ $plan['description'] }}</h4>
-                    <h2 class="fw-bold mb-0">${{ number_format($plan['monthly_price'], 2) }}<small class="text-muted fs-6">/month</small></h2>
-                    <small class="text-muted">or ${{ number_format($plan['yearly_price'], 2) }}/year</small>
+                    <h2 class="fw-bold mb-0">EGP {{ number_format($plan['monthly_price'], 2) }}<small class="text-muted fs-6">/month</small></h2>
+                    <small class="text-muted">or EGP {{ number_format($plan['yearly_price'], 2) }}/year</small>
                 </div>
 
                 <div class="border rounded p-3 mb-3">
@@ -97,11 +97,11 @@
                                     <input type="text" class="form-control" name="name" value="{{ $plan['name'] }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Monthly Price ($)</label>
+                                    <label class="form-label">Monthly Price (EGP)</label>
                                     <input type="number" class="form-control" name="monthly_price" step="0.01" value="{{ $plan['monthly_price'] }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Yearly Price ($)</label>
+                                    <label class="form-label">Yearly Price (EGP)</label>
                                     <input type="number" class="form-control" name="yearly_price" step="0.01" value="{{ $plan['yearly_price'] }}" required>
                                 </div>
                                 <div class="col-md-6">
@@ -170,11 +170,11 @@
                             <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Monthly Price ($)</label>
+                            <label class="form-label">Monthly Price (EGP)</label>
                             <input type="number" class="form-control" name="monthly_price" step="0.01" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Yearly Price ($)</label>
+                            <label class="form-label">Yearly Price (EGP)</label>
                             <input type="number" class="form-control" name="yearly_price" step="0.01" required>
                         </div>
                         <div class="col-md-6">

@@ -86,7 +86,17 @@ class InstanceController extends Controller
 
         $user = Auth::user();
         if ($user->type === 'user') {
-            $instanceLimit = (int) optional($user->customer)->max_instances;
+            $customer = $user->customer;
+
+            // Check if customer subscription is blocked
+            $blockedStatuses = ['cancelled', 'expired', 'pending'];
+            if ($customer && in_array($customer->status, $blockedStatuses)) {
+                return back()->withErrors([
+                    'error' => 'Your subscription is not active. Please renew your subscription to continue using this service.'
+                ])->withInput();
+            }
+
+            $instanceLimit = (int) optional($customer)->max_instances;
             $currentInstancesCount = Instance::where('user_id', $user->id)->count();
 
             if ($instanceLimit <= 0) {
@@ -195,7 +205,10 @@ class InstanceController extends Controller
         // ✅ لو views بتعتمد على string state
         $state = $stateData['status'];
 
-        return view('whatsapp.instance', compact('instance', 'state', 'qrCode'));
+        $user = Auth::user();
+        $customer = $user->customer;
+
+        return view('whatsapp.instance', compact('instance', 'state', 'qrCode', 'customer'));
     }
 
     /**
@@ -239,7 +252,14 @@ class InstanceController extends Controller
             'message' => 'required|string',
         ]);
 
-        $instance = Instance::where('user_id', Auth::id())->findOrFail($id);
+        $user = Auth::user();
+        $instance = Instance::where('user_id', $user->id)->findOrFail($id);
+
+        // Check if customer subscription is blocked
+        $blockedStatuses = ['cancelled', 'expired', 'pending'];
+        if ($user->type === 'user' && $user->customer && in_array($user->customer->status, $blockedStatuses)) {
+            return response()->json(['error' => 'Your subscription is not active. Please renew your subscription to continue using this service.'], 403);
+        }
 
         if ($instance->status !== 'connected') {
             return response()->json(['error' => 'Instance not connected'], 400);

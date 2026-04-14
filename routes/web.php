@@ -109,10 +109,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [InstanceController::class, 'index'])->name('dashboard');
 
     // Instances Management
-    Route::post('/instance', [InstanceController::class, 'store'])->name('instance.store');
+    Route::post('/instance', [InstanceController::class, 'store'])->middleware('subscription.active')->name('instance.store');
     Route::get('/instance/{id}', [InstanceController::class, 'show'])->name('instance.show');
     Route::get('/instance/{id}/check', [InstanceController::class, 'checkStatus'])->name('instance.check');
-    Route::post('/instance/{id}/send', [InstanceController::class, 'sendMessage'])->name('instance.send');
+    Route::post('/instance/{id}/send', [InstanceController::class, 'sendMessage'])->middleware('subscription.active')->name('instance.send');
     Route::get('/instance/{id}/logout', [InstanceController::class, 'logout'])->name('instance.logout');
     Route::delete('/instance/{id}', [InstanceController::class, 'destroy'])->name('instance.destroy');
     Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');

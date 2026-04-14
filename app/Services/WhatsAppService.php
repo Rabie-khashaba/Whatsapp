@@ -23,9 +23,19 @@ class WhatsAppService
             ]);
 
             // 1. البحث عن الـ instance
-            $instance = Instance::where('access_token', $token)
+            $instance = Instance::with('user.customer')
+                ->where('access_token', $token)
                 ->where('status', 'connected')
                 ->firstOrFail();
+
+            // 1.5. فحص حالة العميل
+            $blockedStatuses = ['cancelled', 'expired', 'pending'];
+            if ($instance->user->customer && in_array($instance->user->customer->status, $blockedStatuses)) {
+                return [
+                    'success' => false,
+                    'error' => 'Your subscription is not active. Please renew your subscription to continue using this service.'
+                ];
+            }
 
             // 2. فحص الـ rate limits
             $this->checkRateLimits($instance->id);
@@ -162,7 +172,7 @@ class WhatsAppService
     private function calculateSuccessRate(int $instanceId)
     {
         $total = MessageLog::where('instance_id', $instanceId)->count();
-        
+
         if ($total === 0) return 100;
 
         $successful = MessageLog::where('instance_id', $instanceId)

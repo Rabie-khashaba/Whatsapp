@@ -15,6 +15,7 @@ use App\Models\PaymentSetting;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Services\SubscriptionStatusService;
 use App\Services\WhatsAppService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -85,6 +86,7 @@ class AdminPageController extends Controller
         $activeCustomers = Customer::where('status', 'active')->count();
         $pendingCustomers = Customer::where('status', 'pending')->count();
         $expiredCustomers = Customer::where('status', 'expired')->count();
+        $cancelledCustomers = Customer::where('status', 'cancelled')->count();
 
         return view('admins.admin-customers', array_merge(
             $this->dashboardData(),
@@ -93,7 +95,8 @@ class AdminPageController extends Controller
                 'totalCustomers',
                 'activeCustomers',
                 'pendingCustomers',
-                'expiredCustomers'
+                'expiredCustomers',
+                'cancelledCustomers'
             )
         ));
     }
@@ -213,7 +216,7 @@ class AdminPageController extends Controller
     public function updateCustomer(Request $request, Customer $customer): RedirectResponse
     {
         $validated = $request->validate([
-            'status' => ['required', 'in:active,pending,expired'],
+            'status' => ['required', 'in:active,pending,expired,cancelled'],
             'max_instances' => ['required', 'integer', 'min:1', 'max:100'],
             'expiry_date' => ['nullable', 'date'],
             'password' => ['nullable', 'string', 'min:6'],
@@ -1015,7 +1018,11 @@ class AdminPageController extends Controller
             'status' => 'active',
             'start_date' => $startDate->toDateString(),
             'end_date' => $newEndDate->toDateString(),
+            'expiring_notified_at' => null,
+            'expired_notified_at' => null,
         ]);
+
+        app(SubscriptionStatusService::class)->syncSubscription($subscription);
 
         return redirect()->back()->with('success', 'Subscription renewed successfully.');
     }
@@ -1025,6 +1032,8 @@ class AdminPageController extends Controller
         $subscription->update([
             'status' => 'cancelled',
         ]);
+
+        app(SubscriptionStatusService::class)->syncSubscription($subscription);
 
         return redirect()->back()->with('success', 'Subscription cancelled successfully.');
     }
@@ -1202,6 +1211,8 @@ class AdminPageController extends Controller
                 'end_date' => $endDate->toDateString(),
                 'price' => $payment->amount,
                 'billing_cycle' => $billingCycle,
+                'expiring_notified_at' => null,
+                'expired_notified_at' => null,
             ]);
         }
 
@@ -1210,10 +1221,10 @@ class AdminPageController extends Controller
                 'plan' => $subscription->plan->name,
                 'billing_cycle' => $subscription->billing_cycle ?? 'monthly',
                 'max_instances' => $subscription->plan->max_instances ?? $customer->max_instances,
-                'status' => 'active',
-                'expiry_date' => $subscription->end_date,
             ]);
         }
+
+        app(SubscriptionStatusService::class)->syncSubscription($subscription);
 
         $payment->update([
             'subscription_id' => $subscription->id,
@@ -1265,6 +1276,7 @@ class AdminPageController extends Controller
         $totalCustomers = Customer::count();
         $activeCustomers = Customer::where('status', 'active')->count();
         $expiredCustomers = Customer::where('status', 'expired')->count();
+        $cancelledCustomers = Customer::where('status', 'cancelled')->count();
         $pendingPayments = Payment::where('status', 'pending')->count();
         $expiringSoon = Subscription::where('status', 'active')
             ->whereBetween('end_date', [Carbon::today(), Carbon::today()->addDays(7)])
@@ -1286,6 +1298,7 @@ class AdminPageController extends Controller
             'totalCustomers',
             'activeCustomers',
             'expiredCustomers',
+            'cancelledCustomers',
             'pendingPayments',
             'expiringSoon',
             'monthlyRevenue',
@@ -1398,10 +1411,6 @@ class AdminPageController extends Controller
 
     private function syncExpiredCustomerStatuses(): void
     {
-        Customer::query()
-            ->whereNotNull('expiry_date')
-            ->whereDate('expiry_date', '<', Carbon::today())
-            ->where('status', '!=', 'expired')
-            ->update(['status' => 'expired']);
+        app(SubscriptionStatusService::class)->syncAll();
     }
 }
