@@ -128,7 +128,11 @@
                             <td><span class="badge {{ strtolower((string) $customer->plan) === 'pro' ? 'bg-primary' : 'bg-secondary' }}">{{ $customer->plan }}</span></td>
                             <td><span class="badge {{ $customer->status === 'active' ? 'bg-success' : 'bg-secondary' }}">{{ ucfirst((string) $customer->status) }}</span></td>
                             <td>{{ optional($customer->created_at)->format('M d, Y') }}</td>
-                            <td><button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button></td>
+                            <td>
+                                <a href="{{ route('admin.page', ['page' => 'customer-details']) }}?id={{ $customer->id }}" class="btn btn-sm btn-outline-primary" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
                         </tr>
                         @empty
                         <tr><td colspan="5" class="text-center text-muted">No data found</td></tr>

@@ -121,6 +121,7 @@
                 <th>Joined Date</th>
                 <th>Expiry Date</th>
                 <th>Instances</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -139,9 +140,14 @@
                     <td>{{ optional($customer->created_at)->format('Y-m-d') }}</td>
                     <td>{{ optional($customer->expiry_date)->format('Y-m-d') }}</td>
                     <td>{{ $customer->max_instances }}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editCustomerModal{{ $customer->id }}">
+                            <i class="bi bi-pencil me-1"></i>Edit
+                        </button>
+                    </td>
                 </tr>
             @empty
-                <tr><td colspan="9" class="text-center text-muted">No customers found</td></tr>
+                <tr><td colspan="10" class="text-center text-muted">No customers found</td></tr>
             @endforelse
             </tbody>
         </table>
@@ -153,6 +159,56 @@
         {{ $customers->links('pagination::bootstrap-5') }}
     </div>
 </div>
+
+@foreach($customers as $customer)
+<div class="modal fade" id="editCustomerModal{{ $customer->id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ route('admin.customers.update', $customer->id) }}">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Customer</label>
+                        <input type="text" class="form-control" value="{{ $customer->name }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" name="status" required>
+                            <option value="active" {{ old('status', $customer->status) === 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="pending" {{ old('status', $customer->status) === 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="expired" {{ old('status', $customer->status) === 'expired' ? 'selected' : '' }}>Expired</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Max Instances</label>
+                        <input type="number" class="form-control" name="max_instances" min="1" max="100"
+                            value="{{ old('max_instances', $customer->max_instances) }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="date" class="form-control" name="expiry_date"
+                            value="{{ old('expiry_date', optional($customer->expiry_date)->format('Y-m-d')) }}">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Leave empty to keep current password">
+                        <small class="text-muted">Only fill this field if you want to change the customer's password.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
 
 <div class="modal fade" id="addCustomerModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -191,14 +247,6 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" name="status" required>
-                                <option value="active">Active</option>
-                                <option value="pending">Pending</option>
-                                <option value="expired">Expired</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
                             <label class="form-label">Billing Cycle</label>
                             <select class="form-select" name="billing_cycle" required>
                                 <option value="monthly">Monthly</option>
@@ -213,6 +261,7 @@
                             <label class="form-label">Expiry Date</label>
                             <input type="date" class="form-control" name="expiry_date">
                         </div>
+                        <input type="hidden" name="status" value="active">
                     </div>
                 </div>
                 <div class="modal-footer">

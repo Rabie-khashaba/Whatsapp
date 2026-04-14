@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\EmailSetting;
 use App\Models\GeneralSetting;
 use App\Models\Invoice;
+use App\Models\Instance;
 use App\Models\NotificationSetting;
 use App\Models\Payment;
 use App\Models\PaymentSetting;
@@ -42,12 +43,16 @@ class AdminPageController extends Controller
 
     public function dashboard(): View
     {
+        $this->syncExpiredCustomerStatuses();
+
         return view('admins.admin-dashboard', $this->dashboardData());
     }
 
     public function customers(Request $request): View
     {
-        $query = Customer::query();
+        $this->syncExpiredCustomerStatuses();
+
+        $query = Customer::query()->with('user');
 
         if ($request->filled('q')) {
             $q = trim((string) $request->string('q'));
@@ -101,7 +106,6 @@ class AdminPageController extends Controller
             'phone' => ['required', 'string', 'max:20'],
             'country_code' => ['nullable', 'string', 'max:5'],
             'plan' => ['required', 'string', 'max:50'],
-            'status' => ['required', 'in:active,pending,expired'],
             'billing_cycle' => ['required', 'in:monthly,yearly'],
             'max_instances' => ['required', 'integer', 'min:1', 'max:100'],
             'expiry_date' => ['nullable', 'date'],
@@ -151,7 +155,7 @@ class AdminPageController extends Controller
             'phone' => $validated['phone'],
             'country_code' => $validated['country_code'] ?? null,
             'plan' => $validated['plan'],
-            'status' => $validated['status'],
+            'status' => 'active',
             'expiry_date' => $validated['expiry_date'] ?? null,
             'max_instances' => $validated['max_instances'],
             'billing_cycle' => $validated['billing_cycle'],
@@ -193,6 +197,105 @@ class AdminPageController extends Controller
             }
         } else {
             $successMessage .= ' Existing user account linked.';
+        }
+
+        $redirect = redirect()
+            ->route('admin.customers')
+            ->with('success', $successMessage);
+
+        if ($warningMessage) {
+            $redirect->with('warning', $warningMessage);
+        }
+
+        return $redirect;
+    }
+
+    public function updateCustomer(Request $request, Customer $customer): RedirectResponse
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:active,pending,expired'],
+            'max_instances' => ['required', 'integer', 'min:1', 'max:100'],
+            'expiry_date' => ['nullable', 'date'],
+            'password' => ['nullable', 'string', 'min:6'],
+        ]);
+
+        $originalStatus = (string) $customer->status;
+        $originalMaxInstances = (int) $customer->max_instances;
+        $originalExpiryDate = optional($customer->expiry_date)?->format('Y-m-d');
+        $newExpiryDate = $validated['expiry_date'] ?? null;
+        $passwordChanged = !empty($validated['password']);
+        $newStatus = $validated['status'];
+
+        if ($newExpiryDate && $newExpiryDate < now()->toDateString()) {
+            $newStatus = 'expired';
+        }
+
+        $customer->update([
+            'status' => $newStatus,
+            'max_instances' => $validated['max_instances'],
+            'expiry_date' => $newExpiryDate,
+        ]);
+
+        if ($passwordChanged && $customer->user) {
+            $customer->user->update([
+                'password' => Hash::make($validated['password']),
+            ]);
+        }
+
+        $changes = [];
+
+        if ($originalStatus !== $newStatus) {
+            $changes[] = "Status: " . ucfirst($originalStatus) . " -> " . ucfirst($newStatus);
+        }
+
+        if ($originalMaxInstances !== (int) $validated['max_instances']) {
+            $changes[] = "Max instances: {$originalMaxInstances} -> {$validated['max_instances']}";
+        }
+
+        if ($originalExpiryDate !== $newExpiryDate) {
+            $oldExpiryText = $originalExpiryDate ?: 'Not set';
+            $newExpiryText = $newExpiryDate ?: 'Not set';
+            $changes[] = "Expiry date: {$oldExpiryText} -> {$newExpiryText}";
+        }
+
+        if ($passwordChanged) {
+            $changes[] = "New password: {$validated['password']}";
+        }
+
+        $successMessage = 'Customer updated successfully.';
+        $warningMessage = null;
+
+        if (!empty($changes)) {
+            try {
+                $normalizedPhone = PhoneHelper::normalizeEgyptPhone((string) $customer->phone);
+                $message = "Hello {$customer->name}\n"
+                    . "Your account settings were updated:\n- "
+                    . implode("\n- ", $changes);
+
+                $response = app(WhatsAppService::class)->sendUsingAccessToken(
+                    config('services.whatsapp.access_token'),
+                    $normalizedPhone,
+                    $message
+                );
+
+                if ($response['success'] ?? false) {
+                    $successMessage .= ' Update notification sent on WhatsApp.';
+                } else {
+                    $warningMessage = 'Customer updated, but WhatsApp notification was not sent.';
+                    Log::warning('Failed to send customer update notification via WhatsApp', [
+                        'customer_id' => $customer->id,
+                        'phone' => $customer->phone,
+                        'response' => $response,
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                $warningMessage = 'Customer updated, but WhatsApp notification failed.';
+                Log::error('Customer update WhatsApp notification exception', [
+                    'customer_id' => $customer->id,
+                    'phone' => $customer->phone,
+                    'error' => $e->getMessage(),
+                ]);
+            }
         }
 
         $redirect = redirect()
@@ -336,6 +439,9 @@ class AdminPageController extends Controller
 
     public function showBySlug(string $page): View
     {
+        if ($page === 'customer-details') {
+            return $this->customerDetails(request());
+        }
         if ($page === 'admins') {
             return $this->admins();
         }
@@ -365,6 +471,54 @@ class AdminPageController extends Controller
         abort_unless($view, 404);
 
         return view($view, $this->dashboardData());
+    }
+
+    public function customerDetails(Request $request): View
+    {
+        $this->syncExpiredCustomerStatuses();
+
+        $customerId = (int) $request->integer('id');
+        abort_if($customerId <= 0, 404);
+
+        $customer = Customer::query()
+            ->with('user')
+            ->findOrFail($customerId);
+
+        $instances = Instance::query()
+            ->where('user_id', $customer->user_id)
+            ->latest()
+            ->get();
+
+        $subscriptions = Subscription::query()
+            ->with('plan')
+            ->where('customer_id', $customer->id)
+            ->latest('end_date')
+            ->get();
+
+        $latestSubscription = $subscriptions->first();
+
+        $payments = Payment::query()
+            ->where('customer_id', $customer->id)
+            ->latest('paid_at')
+            ->get();
+
+        $invoices = Invoice::query()
+            ->where('customer_id', $customer->id)
+            ->latest('issued_at')
+            ->get();
+
+        $customerStats = [
+            'active_instances' => $instances->where('status', 'connected')->count(),
+            'total_instances' => $instances->count(),
+            'total_payments' => $payments->count(),
+            'total_invoices' => $invoices->count(),
+            'total_paid' => (float) $payments->where('status', 'approved')->sum('amount'),
+        ];
+
+        return view('admins.admin-customer-details', array_merge(
+            $this->dashboardData(),
+            compact('customer', 'instances', 'subscriptions', 'latestSubscription', 'payments', 'invoices', 'customerStats')
+        ));
     }
 
     public function profile(): View
@@ -1106,6 +1260,8 @@ class AdminPageController extends Controller
 
     private function dashboardData(): array
     {
+        $this->syncExpiredCustomerStatuses();
+
         $totalCustomers = Customer::count();
         $activeCustomers = Customer::where('status', 'active')->count();
         $expiredCustomers = Customer::where('status', 'expired')->count();
@@ -1238,5 +1394,14 @@ class AdminPageController extends Controller
         }
 
         return round((($current - $previous) / $previous) * 100, 1);
+    }
+
+    private function syncExpiredCustomerStatuses(): void
+    {
+        Customer::query()
+            ->whereNotNull('expiry_date')
+            ->whereDate('expiry_date', '<', Carbon::today())
+            ->where('status', '!=', 'expired')
+            ->update(['status' => 'expired']);
     }
 }

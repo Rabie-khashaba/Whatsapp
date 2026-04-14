@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'type',
         'role_id',
+        'settings',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'settings' => 'array',
     ];
 
     /**

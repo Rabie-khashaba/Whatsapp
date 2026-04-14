@@ -52,6 +52,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard.html', fn () => redirect()->route('admin.dashboard'));
         Route::get('/customers', [AdminPageController::class, 'customers'])->name('customers');
         Route::post('/customers', [AdminPageController::class, 'storeCustomer'])->name('customers.store');
+        Route::put('/customers/{customer}', [AdminPageController::class, 'updateCustomer'])->name('customers.update');
         Route::get('/customers.html', fn () => redirect()->route('admin.customers'));
         Route::get('/plans', [AdminPageController::class, 'plans'])->name('plans');
         Route::post('/plans', [AdminPageController::class, 'storePlan'])->name('plans.store');
@@ -156,6 +157,8 @@ Route::get('/send-test', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/settings', [ProfileController::class, 'settings'])->name('settings.edit');
+    Route::put('/settings', [ProfileController::class, 'updateSettings'])->name('settings.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

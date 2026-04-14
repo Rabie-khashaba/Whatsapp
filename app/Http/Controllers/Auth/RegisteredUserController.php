@@ -160,6 +160,7 @@ class RegisteredUserController extends Controller
             'email' => session('otp_email'),
             'phone' => session('otp_phone'),
             'country_code' => session('otp_country_code'),
+            'status' => 'active',
         ]);
 
         // تنظيف البيانات من session
