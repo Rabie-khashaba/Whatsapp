@@ -195,4 +195,8 @@ class AdminDemoSeeder extends Seeder
             ]
         );
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f9389bb0657d89ba01c4cde0b6d312a02bd1a402
