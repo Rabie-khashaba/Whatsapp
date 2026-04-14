@@ -79,12 +79,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/payments', [AdminPageController::class, 'payments'])->name('payments');
         Route::get('/invoices', [AdminPageController::class, 'invoices'])->name('invoices');
         Route::get('/invoices/{invoice}', [AdminPageController::class, 'showInvoice'])->name('invoices.show');
-<<<<<<< HEAD
         Route::get('/profile', [AdminPageController::class, 'profile'])->name('profile');
         Route::put('/profile', [AdminPageController::class, 'updateProfile'])->name('profile.update');
         Route::put('/profile/password', [AdminPageController::class, 'updateProfilePassword'])->name('profile.password');
-=======
->>>>>>> f9389bb0657d89ba01c4cde0b6d312a02bd1a402
         Route::get('/payments-queue.html', fn () => redirect()->route('admin.payments.queue'));
         Route::get('/payments.html', fn () => redirect()->route('admin.payments'));
         Route::get('/invoices.html', fn () => redirect()->route('admin.invoices'));

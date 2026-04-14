@@ -339,12 +339,9 @@ class AdminPageController extends Controller
         if ($page === 'admins') {
             return $this->admins();
         }
-<<<<<<< HEAD
         if ($page === 'profile') {
             return $this->profile();
         }
-=======
->>>>>>> f9389bb0657d89ba01c4cde0b6d312a02bd1a402
         if ($page === 'reports') {
             return $this->reports(request());
         }
@@ -370,7 +367,6 @@ class AdminPageController extends Controller
         return view($view, $this->dashboardData());
     }
 
-<<<<<<< HEAD
     public function profile(): View
     {
         /** @var User $admin */
@@ -431,8 +427,6 @@ class AdminPageController extends Controller
         return redirect()->route('admin.profile')->with('success', 'Password changed successfully.');
     }
 
-=======
->>>>>>> f9389bb0657d89ba01c4cde0b6d312a02bd1a402
     public function reports(Request $request): View
     {
         [$dateFrom, $dateTo, $period] = $this->resolveReportPeriod($request);
@@ -1198,7 +1192,6 @@ class AdminPageController extends Controller
         );
     }
 
-<<<<<<< HEAD
     private function adminDisplayRole(User $admin): string
     {
         $firstAdminId = User::query()
@@ -1220,8 +1213,6 @@ class AdminPageController extends Controller
         return $initials ?: 'A';
     }
 
-=======
->>>>>>> f9389bb0657d89ba01c4cde0b6d312a02bd1a402
     private function resolveReportPeriod(Request $request): array
     {
         $period = (string) $request->string('period', 'this_month');
