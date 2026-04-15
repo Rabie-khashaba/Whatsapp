@@ -32,15 +32,20 @@ class InstanceController extends Controller
         $totalMessages = MessageLog::whereIn('instance_id', $instanceIds)->count();
         $totalCampaigns = 0;
         $instanceLimit = 20;
+        $customer = null;
         if ($user->type === 'user') {
-            $instanceLimit = (int) optional($user->customer)->max_instances;
+            $customer = $user->customer;
+            if ($customer) {
+                $customer->updateTrialStatusIfExpired();
+            }
+            $instanceLimit = (int) optional($customer)->max_instances;
             if ($instanceLimit < 0) {
                 $instanceLimit = 0;
             }
         }
         $remainingInstances = max(0, $instanceLimit - $instances->count());
 
-        return view('whatsapp.dashboard', compact('instances', 'totalMessages', 'totalCampaigns', 'remainingInstances', 'instanceLimit'));
+        return view('whatsapp.dashboard', compact('instances', 'totalMessages', 'totalCampaigns', 'remainingInstances', 'instanceLimit', 'customer'));
     }
 
     /**
@@ -87,10 +92,13 @@ class InstanceController extends Controller
         $user = Auth::user();
         if ($user->type === 'user') {
             $customer = $user->customer;
+            if ($customer) {
+                $customer->updateTrialStatusIfExpired();
+            }
 
-            // Check if customer subscription is blocked
+            // Check if customer subscription is blocked (but allow if trial is active)
             $blockedStatuses = ['cancelled', 'expired', 'pending'];
-            if ($customer && in_array($customer->status, $blockedStatuses)) {
+            if ($customer && in_array($customer->status, $blockedStatuses) && !$customer->hasActiveTrial()) {
                 return back()->withErrors([
                     'error' => 'Your subscription is not active. Please renew your subscription to continue using this service.'
                 ])->withInput();
@@ -207,6 +215,10 @@ class InstanceController extends Controller
 
         $user = Auth::user();
         $customer = $user->customer;
+        if ($customer) {
+            $customer->updateTrialStatusIfExpired();
+            $customer->refresh();
+        }
 
         return view('whatsapp.instance', compact('instance', 'state', 'qrCode', 'customer'));
     }
@@ -255,9 +267,13 @@ class InstanceController extends Controller
         $user = Auth::user();
         $instance = Instance::where('user_id', $user->id)->findOrFail($id);
 
-        // Check if customer subscription is blocked
+        if ($user->type === 'user' && $user->customer) {
+            $user->customer->updateTrialStatusIfExpired();
+        }
+
+        // Check if customer subscription is blocked (but allow if trial is active)
         $blockedStatuses = ['cancelled', 'expired', 'pending'];
-        if ($user->type === 'user' && $user->customer && in_array($user->customer->status, $blockedStatuses)) {
+        if ($user->type === 'user' && $user->customer && in_array($user->customer->status, $blockedStatuses) && !$user->customer->hasActiveTrial()) {
             return response()->json(['error' => 'Your subscription is not active. Please renew your subscription to continue using this service.'], 403);
         }
 

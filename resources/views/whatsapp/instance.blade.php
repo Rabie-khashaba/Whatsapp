@@ -74,6 +74,23 @@
                     </span>
                 </span>
 
+                {{-- TRIAL STATUS BADGE --}}
+                @if(isset($customer) && $customer->hasActiveTrial())
+                    <span class="badge bg-info px-4 py-2 ms-2">
+                        <i class="bi bi-hourglass-split me-2"></i>
+                        <span data-en="Free Trial" data-ar="فترة تجريبية مجانية">Free Trial</span>
+                        <br>
+                        <small data-en="Expires: {{ $customer->trial_ends_at->format('M d, Y') }}" data-ar="ينتهي: {{ $customer->trial_ends_at->format('d M, Y') }}">
+                            Expires: {{ $customer->trial_ends_at->format('M d, Y') }}
+                        </small>
+                    </span>
+                    <div class="alert alert-info mt-2">
+                        <small data-en="You are on a free trial. After the trial ends, your account status will change to pending." data-ar="أنت الآن تستخدم فترة مجانية. بعد انتهاء الفترة ستتحول الحالة إلى قيد الانتظار.">
+                            You are on a free trial. After the trial ends, your account status will change to pending.
+                        </small>
+                    </div>
+                @endif
+
                 {{-- DEBUG INFO --}}
                 <div class="mt-3 text-start bg-light p-2 rounded small">
                     <strong data-en="🔍 Debug Info:" data-ar="🔍 معلومات التصحيح:">🔍 Debug Info:</strong><br>
@@ -121,7 +138,7 @@
                     @if($instance->status == 'connected')
                         @php
                             $blockedStatuses = ['cancelled', 'expired', 'pending'];
-                            $isBlocked = isset($customer) && in_array($customer->status, $blockedStatuses);
+                            $isBlocked = isset($customer) && in_array($customer->status, $blockedStatuses) && !$customer->hasActiveTrial();
                         @endphp
 
                         <a href="{{ route('instance.logout', $instance->id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to disconnect?');">

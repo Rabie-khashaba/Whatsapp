@@ -28,9 +28,13 @@ class WhatsAppService
                 ->where('status', 'connected')
                 ->firstOrFail();
 
-            // 1.5. فحص حالة العميل
+            // 1.5. فحص حالة العميل (السماح إذا كانت فترة التجربة نشطة)
+            if ($instance->user->customer) {
+                $instance->user->customer->updateTrialStatusIfExpired();
+            }
+
             $blockedStatuses = ['cancelled', 'expired', 'pending'];
-            if ($instance->user->customer && in_array($instance->user->customer->status, $blockedStatuses)) {
+            if ($instance->user->customer && in_array($instance->user->customer->status, $blockedStatuses) && !$instance->user->customer->hasActiveTrial()) {
                 return [
                     'success' => false,
                     'error' => 'Your subscription is not active. Please renew your subscription to continue using this service.'

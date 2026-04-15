@@ -20,12 +20,16 @@ class Customer extends Model
         'expiry_date',
         'max_instances',
         'billing_cycle',
+        'trial_ends_at',
+        'used_trial',
     ];
 
     protected $casts = [
         'expiry_date' => 'date',
+        'trial_ends_at' => 'datetime',
         'max_instances' => 'integer',
         'user_id' => 'integer',
+        'used_trial' => 'boolean',
     ];
 
     /**
@@ -44,6 +48,27 @@ class Customer extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Check if customer has active trial period
+     */
+    public function hasActiveTrial(): bool
+    {
+        return $this->plan === 'Trial' &&
+               $this->trial_ends_at &&
+               $this->trial_ends_at->isFuture();
+    }
+
+    public function updateTrialStatusIfExpired(): bool
+    {
+        if ($this->plan === 'Trial' && $this->trial_ends_at && $this->trial_ends_at->isPast() && $this->status === 'active') {
+            $this->status = 'pending';
+            $this->save();
+            return true;
+        }
+
+        return false;
     }
 }
 
