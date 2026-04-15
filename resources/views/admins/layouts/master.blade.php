@@ -14,7 +14,7 @@
 <body>
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="me-2">
+            <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="me-2">
             <span class="fw-bold text-danger">Admin Panel</span>
         </div>
 

@@ -9,7 +9,7 @@
             <div class="col-md-5 col-lg-4">
                 <div class="auth-card p-4 p-md-5 bg-white">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo mb-3">
+                        <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="logo mb-3">
                         <h3 class="fw-bold text-danger">Admin Panel</h3>
                         <p class="text-muted mb-0">Login to access admin dashboard</p>
                     </div>

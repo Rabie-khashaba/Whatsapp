@@ -8,7 +8,6 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\InstanceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SubscriptionController;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*

@@ -161,6 +161,10 @@ class RegisteredUserController extends Controller
             'phone' => session('otp_phone'),
             'country_code' => session('otp_country_code'),
             'status' => 'active',
+            'plan' => 'Trial',
+            'trial_ends_at' => now()->addDays(3),
+            'used_trial' => false,
+            'max_instances' => 3,
         ]);
 
         // تنظيف البيانات من session

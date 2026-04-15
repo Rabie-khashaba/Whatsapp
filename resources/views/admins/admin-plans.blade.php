@@ -207,8 +207,8 @@
                         <div class="col-12">
                             <label class="form-label">Features (one per line)</label>
                             <textarea class="form-control" name="features" rows="4">Feature 1
-Feature 2
-Feature 3</textarea>
+                             Feature 2
+                             Feature 3</textarea>
                         </div>
                         <div class="col-12">
                             <div class="form-check form-switch">
