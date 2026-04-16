@@ -44,7 +44,7 @@
                     <span class="badge bg-warning text-dark ms-2">{{ ucfirst($selectedSubscription->billing_cycle ?? 'monthly') }}</span>
                 </p>
                 <p class="text-muted mb-0 small">
-                    Amount due: ${{ number_format((float) $selectedSubscription->price, 2) }}
+                    Amount due: EGP {{ number_format((float) $selectedSubscription->price, 2) }}
                 </p>
             </div>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitPaymentModal">
@@ -71,7 +71,7 @@
                 @forelse($payments as $payment)
                     <tr>
                         <td><code>TX-{{ str_pad((string) $payment->id, 6, '0', STR_PAD_LEFT) }}</code></td>
-                        <td><strong>${{ number_format((float) $payment->amount, 2) }}</strong></td>
+                        <td><strong>EGP {{ number_format((float) $payment->amount, 2) }}</strong></td>
                         <td>{{ str_replace('_', ' ', $payment->method) }}</td>
                         <td>{{ ($payment->paid_at ?? $payment->created_at)?->format('M j, Y h:i A') }}</td>
                         <td>
@@ -120,7 +120,7 @@
                 </div>
                 <div>
                     <p class="text-muted mb-1 small">Total Approved</p>
-                    <h4 class="mb-0 fw-bold">${{ number_format((float) $totalAmount, 2) }}</h4>
+                    <h4 class="mb-0 fw-bold">EGP {{ number_format((float) $totalAmount, 2) }}</h4>
                 </div>
             </div>
         </div>
@@ -166,18 +166,13 @@
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Amount (USD)</label>
+                        <label class="form-label">Amount (EGP)</label>
                         <input type="number" name="amount" class="form-control" step="0.01" min="1" value="{{ $selectedSubscription ? (float) $selectedSubscription->price : old('amount') }}" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Payment Method</label>
-                        <select class="form-select" name="method" required>
-                            <option value="">Select method</option>
-                            <option value="vodafone_cash">Vodafone Cash</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                            <option value="credit_card">Credit Card</option>
-                            <option value="manual">Manual</option>
-                        </select>
+                        <input type="hidden" name="method" value="paymob">
+                        <input type="text" class="form-control" value="Paymob (Credit/Debit Card)" readonly>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Subscription</label>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - WhatsApp Campaign Platform</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar Documentation -->
+    <aside class="sidebar" style="width: 280px;">
+        <div class="sidebar-brand">
+            <img src="images/logo.png" alt="Logo" class="me-2">
+            <span class="fw-bold" data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="dashboard.html">
+                    <i class="bi bi-whatsapp"></i>
+                    <span data-en="Whatsapp" data-ar="واتساب">Whatsapp</span>
+                </a>
+            </li>
+            <li>
+                <a href="friendly.html">
+                    <i class="bi bi-chat-heart"></i>
+                    <span data-en="Friendly" data-ar="الرسائل الودية">Friendly</span>
+                </a>
+            </li>
+            <li>
+                <a href="campaigns.html">
+                    <i class="bi bi-megaphone"></i>
+                    <span data-en="Campaigns" data-ar="الحملات">Campaigns</span>
+                </a>
+            </li>
+            <li>
+                <a href="data.html">
+                    <i class="bi bi-database"></i>
+                    <span data-en="Data" data-ar="البيانات">Data</span>
+                </a>
+            </li>
+            <li>
+                <a href="interactive-message.html">
+                    <i class="bi bi-chat-square-text"></i>
+                    <span data-en="Interactive Message" data-ar="الرسائل التفاعلية">Interactive Message</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="API & INTEGRATION" data-ar="API والدمج">API & INTEGRATION</span></li>
+            
+            <li>
+                <a href="api-instance.html" class="active">
+                    <i class="bi bi-code-square"></i>
+                    <span data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="MEDIA & FILES" data-ar="الوسائط والملفات">MEDIA & FILES</span></li>
+            
+            <li>
+                <a href="media.html">
+                    <i class="bi bi-images"></i>
+                    <span data-en="Media" data-ar="الوسائط">Media</span>
+                </a>
+            </li>
+            
+            <li class="menu-divider"></li>
+            <li class="menu-header"><span data-en="BILLING" data-ar="الفواتير">BILLING</span></li>
+            
+            <li>
+                <a href="subscriptions.html">
+                    <i class="bi bi-credit-card"></i>
+                    <span data-en="Subscription" data-ar="الاشتراك">Subscription</span>
+                </a>
+            </li>
+            <li>
+                <a href="payments.html">
+                    <i class="bi bi-wallet2"></i>
+                    <span data-en="Payment" data-ar="الدفع">Payment</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <button class="btn btn-outline-danger w-100" onclick="logout()">
+                <i class="bi bi-box-arrow-left me-2"></i>
+                <span data-en="Logout" data-ar="تسجيل الخروج">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" style="margin-left: 250px;">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0" data-en="API Documentation" data-ar="توثيق API">API Documentation</h4>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Search endpoints..." data-en-placeholder="Search endpoints..." data-ar-placeholder="البحث في النقاط...">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="api-instance.html" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-phone me-1"></i>
+                            <span data-en="Instance" data-ar="المثيل">Instance</span>
+                        </a>
+                        <a href="api-tokens.html" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-key me-1"></i>
+                            <span data-en="Tokens" data-ar="الرموز">Tokens</span>
+                        </a>
+                        <a href="api-documentation.html" class="btn btn-sm btn-primary">
+                            <i class="bi bi-book me-1"></i>
+                            <span data-en="Docs" data-ar="التوثيق">Docs</span>
+                        </a>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleLanguage()">
+                        <i class="bi bi-globe"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Base URL Info -->
+        <div class="dashboard-card mb-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="flex-shrink-0">
+                    <i class="bi bi-link-45deg fs-3 text-primary"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <label class="form-label small fw-bold mb-1" data-en="Base URL" data-ar="الرابط الأساسي">Base URL</label>
+                    <div class="bg-light p-2 rounded">
+                        <code>https://api.wapilot.net/api/v2</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- List Instances Endpoint -->
+        <div class="dashboard-card" id="list-instances">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="badge bg-success">GET</span>
+                <h5 class="mb-0" data-en="List Instances" data-ar="قائمة المثيلات">List Instances</h5>
+            </div>
+            <p class="text-muted" data-en="List all instances accessible by the token owner." data-ar="قائمة جميع المثيلات المتاحة لمالك الرمز.">List all instances accessible by the token owner.</p>
+
+            <h6 class="mt-4 mb-2" data-en="Endpoint" data-ar="النقطة">Endpoint</h6>
+            <div class="bg-light p-3 rounded">
+                <code>https://api.wapilot.net/api/v2/instances</code>
+            </div>
+
+            <h6 class="mt-4 mb-2" data-en="Request Headers" data-ar="رؤوس الطلب">Request Headers</h6>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th data-en="HEADER" data-ar="الرأس">HEADER</th>
+                            <th data-en="REQUIRED" data-ar="مطلوب">REQUIRED</th>
+                            <th data-en="DESCRIPTION" data-ar="الوصف">DESCRIPTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>token</code></td>
+                            <td><span class="badge bg-success" data-en="Yes" data-ar="نعم">Yes</span></td>
+                            <td data-en="API token (header)." data-ar="رمز API (رأس).">API token (header).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h6 class="mt-4 mb-2" data-en="Example Request" data-ar="مثال على الطلب">Example Request</h6>
+            <div class="bg-dark text-white p-3 rounded">
+                <code class="text-white">
+curl -X GET https://api.wapilot.net/api/v2/instances \<br>
+  -H "token: YOUR_API_TOKEN"
+                </code>
+            </div>
+
+            <h6 class="mt-4 mb-2" data-en="Example Response" data-ar="مثال على الرد">Example Response</h6>
+            <div class="bg-light p-3 rounded">
+                <pre class="mb-0"><code>{
+  "success": true,
+  "data": [
+    {
+      "unique_name": "instance1734",
+      "name": "Move Point",
+      "phone": "20111266019",
+      "status": "WORKING",
+      "subscription_type": "api",
+      "subscription_status": "active"
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Instance Details Endpoint -->
+        <div class="dashboard-card" id="instance-details">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="badge bg-success">GET</span>
+                <h5 class="mb-0" data-en="Instance Details" data-ar="تفاصيل المثيل">Instance Details</h5>
+            </div>
+            <p class="text-muted" data-en="Get instance details by unique name (route param)." data-ar="الحصول على تفاصيل المثيل بواسطة الاسم الفريد.">Get instance details by unique name (route param).</p>
+
+            <h6 class="mt-4 mb-2" data-en="Endpoint" data-ar="النقطة">Endpoint</h6>
+            <div class="bg-light p-3 rounded">
+                <code>https://api.wapilot.net/api/v2/instances/{instance_id}</code>
+            </div>
+
+            <h6 class="mt-4 mb-2" data-en="Request Headers" data-ar="رؤوس الطلب">Request Headers</h6>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th data-en="HEADER" data-ar="الرأس">HEADER</th>
+                            <th data-en="REQUIRED" data-ar="مطلوب">REQUIRED</th>
+                            <th data-en="DESCRIPTION" data-ar="الوصف">DESCRIPTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>token</code></td>
+                            <td><span class="badge bg-success" data-en="Yes" data-ar="نعم">Yes</span></td>
+                            <td data-en="API token (header)." data-ar="رمز API (رأس).">API token (header).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

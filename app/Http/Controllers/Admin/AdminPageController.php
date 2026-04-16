@@ -173,6 +173,8 @@ class AdminPageController extends Controller
                 $message = "Welcome {$validated['name']}\n"
                     . "Your account is ready.\n"
                     . "Phone: {$validated['phone']}\n"
+                    . ($user->email ? "Email: {$user->email}\n" : '')
+                    . "Password: {$plainPassword}\n"
                     . "Login: " . url('/login') . "\n"
                     . "After login, open dashboard and complete WhatsApp scan.";
 

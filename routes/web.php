@@ -103,6 +103,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->where('page', 'customers|customer-details|plans|subscriptions|payments-queue|payments|invoices|reports|admins|settings|profile');
 });
 
+// Paymob callback + result pages (no auth, Paymob redirects here)
+Route::match(['GET', 'POST'], '/payments/paymob/callback', [PaymentController::class, 'paymobCallback'])->name('payments.paymob.callback');
+Route::get('/payments/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('/payments/failed', [PaymentController::class, 'failed'])->name('payment.failed');
+
+// Simple Paymob web form flow (optional)
+Route::get('/payment', [PaymentController::class, 'showPaymentPage'])->name('payment.form');
+Route::post('/payment/process', [PaymentController::class, 'paymentPageSubmit'])->name('payment.process.web');
+Route::get('/payment-success', [PaymentController::class, 'success']);
+Route::get('/payment-failed', [PaymentController::class, 'failed']);
+
 Route::middleware(['auth'])->group(function () {
 
     // Dashboard
