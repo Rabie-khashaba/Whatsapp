@@ -127,8 +127,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/instance/{id}/logout', [InstanceController::class, 'logout'])->name('instance.logout');
     Route::delete('/instance/{id}', [InstanceController::class, 'destroy'])->name('instance.destroy');
     Route::get('/api-integration', [InstanceController::class, 'apiIntegration'])->name('api.integration.index');
-    Route::post('/api-integration/tokens', [InstanceController::class, 'generateApiToken'])->name('api.integration.tokens.generate');
-    Route::delete('/api-integration/tokens/{apiToken}', [InstanceController::class, 'revokeApiToken'])->name('api.integration.tokens.revoke');
     Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
     Route::get('/subscriptions.html', fn () => redirect()->route('subscriptions.index'));
     Route::post('/subscriptions/checkout', [SubscriptionController::class, 'checkout'])->name('subscriptions.checkout');

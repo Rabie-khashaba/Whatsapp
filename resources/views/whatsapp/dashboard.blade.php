@@ -252,30 +252,49 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>
-                            <strong>instance1734</strong><br>
-                            <small class="text-muted">20111266019</small>
-                        </td>
-                        <td>20111266019</td>
-                        <td><span class="badge bg-secondary">Move Point</span></td>
-                        <td><span class="badge bg-success">WORKING</span></td>
-                        <td>5395</td>
-                        <td>0</td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-primary" onclick="viewInstance('instance1734')">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="editInstance('instance1734')">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-outline-danger" onclick="deleteInstance('instance1734')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    @forelse($instances as $instance)
+                        <tr>
+                            <td>
+                                <strong>{{ $instance->name }}</strong><br>
+                                <small class="text-muted">{{ $instance->phone_number ?? 'Not Connected' }}</small>
+                            </td>
+                            <td>{{ $instance->phone_number ?? '-' }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ $instance->label ?? 'No Label' }}</span>
+                            </td>
+                            <td>
+                                <span class="badge {{ $instance->status == 'connected' ? 'bg-success' : 'bg-warning text-dark' }}">
+                                    {{ strtoupper($instance->status) }}
+                                </span>
+                            </td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ route('instance.show', $instance->id) }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <button class="btn btn-outline-secondary" type="button" disabled>
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <form action="{{ route('instance.destroy', $instance->id) }}" method="POST" class="d-inline"
+                                        onsubmit="return confirm('Are you sure?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No instances found. Add one to get started!
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -322,4 +341,3 @@
 @section('scripts')
     <script src="{{ asset('js/dashboard.js') }}"></script>
 @endsection
-
