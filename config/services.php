@@ -49,6 +49,11 @@ return [
         'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
     ],
 
+    'whatsapp_api' => [
+        'url' => env('WHATSAPP_API_URL', env('APP_URL')),
+        'token' => env('WHATSAPP_API_TOKEN'),
+    ],
+
 
     'green_api' => [
         'host' => env('GREEN_API_HOST', 'https://api.green-api.com'),

@@ -41,7 +41,7 @@
             <li class="menu-header"><span data-en="API & INTEGRATION" data-ar="API والدمج">API & INTEGRATION</span></li>
             
             <li>
-                <a href="api-instance.html">
+                <a href="{{ route('api.integration.index') }}" class="{{ request()->routeIs('api.integration.*') ? 'active' : '' }}">
                     <i class="bi bi-code-square"></i>
                     <span data-en="WhatsApp Integration" data-ar="دمج الواتساب">WhatsApp Integration</span>
                 </a>

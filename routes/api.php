@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\ClientTokenController;
+use App\Http\Controllers\Api\InstanceApiController;
 use App\Http\Controllers\Api\WhatsappController;
 use App\Http\Controllers\Api\WebhookController;
 use App\Http\Controllers\PaymentController;
@@ -34,6 +35,11 @@ Route::post(
 
 
 Route::post('/webhook/baileys', [WebhookController::class, 'handle']);
+
+Route::prefix('v2')->group(function () {
+    Route::get('/instances', [InstanceApiController::class, 'index']);
+    Route::get('/instances/{instance_id}', [InstanceApiController::class, 'show']);
+});
 
 // Paymob redirect/callback (some dashboards require /api/* URLs)
 Route::match(['GET', 'POST'], '/payment/callback', [PaymentController::class, 'paymobCallback']);

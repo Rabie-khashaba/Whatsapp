@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ApiToken;
 use App\Models\Instance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,6 +52,43 @@ class InstanceController extends Controller
     /**
      * ✅ إنشاء Instance جديد في Baileys
      */
+    public function apiIntegration()
+    {
+        $user = Auth::user();
+
+        return view('whatsapp.api-integration', [
+            'instances' => Instance::where('user_id', $user->id)->latest()->get(),
+            'apiTokens' => ApiToken::where('user_id', $user->id)->latest()->get(),
+            'apiBaseUrl' => rtrim((string) config('services.whatsapp_api.url', config('app.url')), '/') . '/api/v2',
+        ]);
+    }
+
+    public function generateApiToken()
+    {
+        ApiToken::where('user_id', Auth::id())->update(['active' => false]);
+
+        ApiToken::create([
+            'user_id' => Auth::id(),
+            'token' => Str::random(60),
+            'active' => true,
+        ]);
+
+        return redirect()
+            ->route('api.integration.index')
+            ->with('success', 'API token generated successfully.');
+    }
+
+    public function revokeApiToken(ApiToken $apiToken)
+    {
+        abort_unless($apiToken->user_id === Auth::id(), 403);
+
+        $apiToken->update(['active' => false]);
+
+        return redirect()
+            ->route('api.integration.index')
+            ->with('success', 'API token revoked successfully.');
+    }
+
     private function createBaileysInstance($instanceId)
     {
         try {
