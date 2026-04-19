@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Plan;
 use App\Models\Subscription;
+use App\Services\FawaterkPaymentService;
 use App\Services\SubscriptionStatusService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -51,6 +52,7 @@ class PaymentController extends Controller
         $selectedSubscriptionId = request()->integer('subscription');
         $selectedSubscription = $subscriptions->firstWhere('id', $selectedSubscriptionId);
         $openPaymentModal = request()->boolean('checkout') && $selectedSubscription !== null;
+        $fawaterkPaymentMethods = app(FawaterkPaymentService::class)->paymentMethods();
 
         $totalPayments = Payment::where('customer_id', $customer->id)->count();
         $totalAmount = Payment::where('customer_id', $customer->id)->where('status', 'approved')->sum('amount');
@@ -66,7 +68,8 @@ class PaymentController extends Controller
             'totalPayments',
             'totalAmount',
             'verifiedPayments',
-            'pendingPayments'
+            'pendingPayments',
+            'fawaterkPaymentMethods'
         ));
     }
 
@@ -83,11 +86,13 @@ class PaymentController extends Controller
 
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:1'],
+            'method' => ['required', 'string', 'in:paymob,fawaterk'],
+            'fawaterk_payment_method_id' => ['nullable', 'integer', 'required_if:method,fawaterk'],
             'subscription_id' => ['nullable', 'integer', 'exists:subscriptions,id'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $method = 'paymob';
+        $method = $validated['method'];
 
         $subscriptionId = $validated['subscription_id'] ?? null;
         $amount = (float) $validated['amount'];
@@ -133,13 +138,25 @@ class PaymentController extends Controller
                 'phone_number' => (string) ($user->phone ?? ''),
                 'email' => (string) ($user->email ?? ''),
             ],
+            'payment_method_id' => $validated['fawaterk_payment_method_id'] ?? null,
+            'item_name' => $selectedSubscription?->plan?->name
+                ? 'Subscription: ' . $selectedSubscription->plan->name
+                : 'Subscription payment',
         ]);
 
-        $response = $this->paymentGateway->sendPayment($paymentRequest);
+        $gateway = $method === 'fawaterk'
+            ? app(FawaterkPaymentService::class)
+            : $this->paymentGateway;
+
+        $response = $gateway->sendPayment($paymentRequest);
 
         if (($response['success'] ?? false) && !empty($response['url'])) {
             if (!empty($response['provider_order_id'])) {
-                $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . 'Paymob order: ' . $response['provider_order_id']);
+                $label = $method === 'fawaterk' ? 'Fawaterk invoice: ' : 'Paymob order: ';
+                $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . $label . $response['provider_order_id']);
+                if (!empty($response['provider_invoice_key'])) {
+                    $payment->notes = trim($payment->notes . "\n" . 'Fawaterk invoice key: ' . $response['provider_invoice_key']);
+                }
                 $payment->save();
             }
 
@@ -147,7 +164,7 @@ class PaymentController extends Controller
         }
 
         $payment->status = 'rejected';
-        $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . ($response['message'] ?? 'Paymob payment link creation failed.'));
+        $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . ($response['message'] ?? 'Payment link creation failed.'));
         $payment->save();
 
         return redirect()->route('payment.failed');
@@ -156,24 +173,51 @@ class PaymentController extends Controller
     public function paymobCallback(Request $request): RedirectResponse
     {
         $result = $this->paymentGateway->callBack($request);
-        $ok = (bool) ($result['success'] ?? false);
+        $payment = $this->findPaymentFromGatewayResult($result, 'Paymob order: ');
 
-        $payment = null;
+        return $this->handleGatewayResult($payment, $result, 'Paymob');
+    }
 
+    public function fawaterkCallback(Request $request): RedirectResponse
+    {
+        $result = app(FawaterkPaymentService::class)->callBack($request);
+
+        if (($result['hash_valid'] ?? true) === false) {
+            return redirect()->route('payments.index')->withErrors([
+                'payment' => 'Invalid Fawaterk callback signature.',
+            ]);
+        }
+
+        $payment = $this->findPaymentFromGatewayResult($result, 'Fawaterk invoice: ');
+
+        return $this->handleGatewayResult($payment, $result, 'Fawaterk');
+    }
+
+    private function findPaymentFromGatewayResult(array $result, string $providerNotePrefix): ?Payment
+    {
         $paymentId = (int) ($result['order_id'] ?? 0);
         if ($paymentId > 0) {
             $payment = Payment::find($paymentId);
-        }
-
-        if (!$payment) {
-            $providerOrderId = (string) ($result['provider_order_id'] ?? '');
-            if ($providerOrderId !== '') {
-                $payment = Payment::query()
-                    ->where('notes', 'like', '%' . 'Paymob order: ' . $providerOrderId . '%')
-                    ->latest('id')
-                    ->first();
+            if ($payment) {
+                return $payment;
             }
         }
+
+        $providerOrderId = (string) ($result['provider_order_id'] ?? '');
+        if ($providerOrderId !== '') {
+            return Payment::query()
+                ->where('notes', 'like', '%' . $providerNotePrefix . $providerOrderId . '%')
+                ->latest('id')
+                ->first();
+        }
+
+        return null;
+    }
+
+    private function handleGatewayResult(?Payment $payment, array $result, string $providerName): RedirectResponse
+    {
+        $ok = (bool) ($result['success'] ?? false);
+        $pending = ($result['status'] ?? null) === 'pending';
 
         if ($payment) {
             if ($payment->status !== 'pending') {
@@ -184,102 +228,32 @@ class PaymentController extends Controller
                     ]);
             }
 
+            if ($pending) {
+                return redirect()->route('payments.index')->with('success', 'Payment is pending confirmation.');
+            }
+
             $payment->status = $ok ? 'approved' : 'rejected';
             $payment->paid_at = $ok ? now() : null;
 
             $providerTransactionId = (string) ($result['provider_transaction_id'] ?? '');
             if ($providerTransactionId !== '') {
-                $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . 'Paymob transaction: ' . $providerTransactionId);
+                $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . $providerName . ' transaction: ' . $providerTransactionId);
+            }
+
+            $paymentMethod = (string) ($result['payment_method'] ?? '');
+            if ($paymentMethod !== '') {
+                $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . $providerName . ' method: ' . $paymentMethod);
             }
 
             $declineReason = (string) ($result['decline_reason'] ?? '');
             if (!$ok && $declineReason !== '') {
-                $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . 'Paymob decline reason: ' . $declineReason);
+                $payment->notes = trim((string) ($payment->notes ? $payment->notes . "\n" : '') . $providerName . ' decline reason: ' . $declineReason);
             }
 
             $payment->save();
 
             if ($ok) {
-                $customer = $payment->customer;
-                if ($customer) {
-                    $subscription = $payment->subscription;
-                    if (!$subscription) {
-                        $subscription = Subscription::where('customer_id', $customer->id)
-                            ->latest('end_date')
-                            ->first();
-                    }
-
-                    if (!$subscription) {
-                        $plan = Plan::whereRaw('LOWER(name) = ?', [Str::lower((string) $customer->plan)])->first();
-                        $startDate = Carbon::today();
-                        $billingCycle = $customer->billing_cycle === 'yearly' ? 'yearly' : 'monthly';
-                        $endDate = ($billingCycle === 'yearly')
-                            ? $startDate->copy()->addYear()->subDay()
-                            : $startDate->copy()->addMonth()->subDay();
-
-                        $subscription = Subscription::create([
-                            'customer_id' => $customer->id,
-                            'plan_id' => $plan?->id,
-                            'status' => 'active',
-                            'start_date' => $startDate->toDateString(),
-                            'end_date' => $endDate->toDateString(),
-                            'price' => $payment->amount,
-                            'billing_cycle' => $billingCycle,
-                        ]);
-                    } else {
-                        $billingCycle = $subscription->billing_cycle ?? $customer->billing_cycle ?? 'monthly';
-                        $startDate = Carbon::parse($subscription->end_date)->isPast()
-                            ? Carbon::today()
-                            : Carbon::parse($subscription->end_date)->addDay();
-
-                        $endDate = ($billingCycle === 'yearly')
-                            ? $startDate->copy()->addYear()->subDay()
-                            : $startDate->copy()->addMonth()->subDay();
-
-                        $subscription->update([
-                            'status' => 'active',
-                            'start_date' => $startDate->toDateString(),
-                            'end_date' => $endDate->toDateString(),
-                            'price' => $payment->amount,
-                            'billing_cycle' => $billingCycle,
-                            'expiring_notified_at' => null,
-                            'expired_notified_at' => null,
-                        ]);
-                    }
-
-                    if ($subscription->plan) {
-                        $customer->update([
-                            'plan' => $subscription->plan->name,
-                            'billing_cycle' => $subscription->billing_cycle ?? 'monthly',
-                            'max_instances' => $subscription->plan->max_instances ?? $customer->max_instances,
-                        ]);
-                    }
-
-                    app(SubscriptionStatusService::class)->syncSubscription($subscription);
-
-                    if ($payment->subscription_id !== $subscription->id) {
-                        $payment->subscription_id = $subscription->id;
-                        $payment->save();
-                    }
-
-                    if (!Invoice::where('payment_id', $payment->id)->exists()) {
-                        $nextInvoiceId = (int) (Invoice::max('id') ?? 0) + 1;
-                        $invoiceNumber = 'INV-' . Carbon::now()->format('Y') . '-' . str_pad((string) $nextInvoiceId, 4, '0', STR_PAD_LEFT);
-
-                        Invoice::create([
-                            'customer_id' => $customer->id,
-                            'subscription_id' => $subscription->id,
-                            'payment_id' => $payment->id,
-                            'invoice_number' => $invoiceNumber,
-                            'amount' => $payment->amount,
-                            'currency' => $payment->currency,
-                            'status' => 'paid',
-                            'issued_at' => Carbon::today()->toDateString(),
-                            'due_at' => Carbon::today()->toDateString(),
-                            'paid_at' => Carbon::now(),
-                        ]);
-                    }
-                }
+                $this->activateSubscriptionForPayment($payment);
             }
         }
 
@@ -288,6 +262,92 @@ class PaymentController extends Controller
             : redirect()->route('payments.index')->withErrors([
                 'payment' => 'Payment was not completed.',
             ]);
+    }
+
+    private function activateSubscriptionForPayment(Payment $payment): void
+    {
+        $customer = $payment->customer;
+        if (!$customer) {
+            return;
+        }
+
+        $subscription = $payment->subscription;
+        if (!$subscription) {
+            $subscription = Subscription::where('customer_id', $customer->id)
+                ->latest('end_date')
+                ->first();
+        }
+
+        if (!$subscription) {
+            $plan = Plan::whereRaw('LOWER(name) = ?', [Str::lower((string) $customer->plan)])->first();
+            $startDate = Carbon::today();
+            $billingCycle = $customer->billing_cycle === 'yearly' ? 'yearly' : 'monthly';
+            $endDate = ($billingCycle === 'yearly')
+                ? $startDate->copy()->addYear()->subDay()
+                : $startDate->copy()->addMonth()->subDay();
+
+            $subscription = Subscription::create([
+                'customer_id' => $customer->id,
+                'plan_id' => $plan?->id,
+                'status' => 'active',
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $endDate->toDateString(),
+                'price' => $payment->amount,
+                'billing_cycle' => $billingCycle,
+            ]);
+        } else {
+            $billingCycle = $subscription->billing_cycle ?? $customer->billing_cycle ?? 'monthly';
+            $startDate = Carbon::parse($subscription->end_date)->isPast()
+                ? Carbon::today()
+                : Carbon::parse($subscription->end_date)->addDay();
+
+            $endDate = ($billingCycle === 'yearly')
+                ? $startDate->copy()->addYear()->subDay()
+                : $startDate->copy()->addMonth()->subDay();
+
+            $subscription->update([
+                'status' => 'active',
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $endDate->toDateString(),
+                'price' => $payment->amount,
+                'billing_cycle' => $billingCycle,
+                'expiring_notified_at' => null,
+                'expired_notified_at' => null,
+            ]);
+        }
+
+        if ($subscription->plan) {
+            $customer->update([
+                'plan' => $subscription->plan->name,
+                'billing_cycle' => $subscription->billing_cycle ?? 'monthly',
+                'max_instances' => $subscription->plan->max_instances ?? $customer->max_instances,
+            ]);
+        }
+
+        app(SubscriptionStatusService::class)->syncSubscription($subscription);
+
+        if ($payment->subscription_id !== $subscription->id) {
+            $payment->subscription_id = $subscription->id;
+            $payment->save();
+        }
+
+        if (!Invoice::where('payment_id', $payment->id)->exists()) {
+            $nextInvoiceId = (int) (Invoice::max('id') ?? 0) + 1;
+            $invoiceNumber = 'INV-' . Carbon::now()->format('Y') . '-' . str_pad((string) $nextInvoiceId, 4, '0', STR_PAD_LEFT);
+
+            Invoice::create([
+                'customer_id' => $customer->id,
+                'subscription_id' => $subscription->id,
+                'payment_id' => $payment->id,
+                'invoice_number' => $invoiceNumber,
+                'amount' => $payment->amount,
+                'currency' => $payment->currency,
+                'status' => 'paid',
+                'issued_at' => Carbon::today()->toDateString(),
+                'due_at' => Carbon::today()->toDateString(),
+                'paid_at' => Carbon::now(),
+            ]);
+        }
     }
 
     public function success(): View

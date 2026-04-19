@@ -105,6 +105,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 // Paymob callback + result pages (no auth, Paymob redirects here)
 Route::match(['GET', 'POST'], '/payments/paymob/callback', [PaymentController::class, 'paymobCallback'])->name('payments.paymob.callback');
+Route::match(['GET', 'POST'], '/payments/fawaterk/callback', [PaymentController::class, 'fawaterkCallback'])->name('payments.fawaterk.callback');
 Route::get('/payments/success', [PaymentController::class, 'success'])->name('payment.success');
 Route::get('/payments/failed', [PaymentController::class, 'failed'])->name('payment.failed');
 

@@ -171,8 +171,33 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Payment Method</label>
-                        <input type="hidden" name="method" value="paymob">
-                        <input type="text" class="form-control" value="Paymob (Credit/Debit Card)" readonly>
+                        <div class="d-grid gap-2">
+                            <label class="border rounded p-3 d-flex align-items-center gap-2">
+                                <input class="form-check-input m-0 payment-gateway-option" type="radio" name="method" value="paymob" {{ old('method', 'paymob') === 'paymob' ? 'checked' : '' }}>
+                                <span>Paymob (Credit/Debit Card)</span>
+                            </label>
+                            <label class="border rounded p-3 d-flex align-items-center gap-2">
+                                <input class="form-check-input m-0 payment-gateway-option" type="radio" name="method" value="fawaterk" {{ old('method') === 'fawaterk' ? 'checked' : '' }}>
+                                <span>Fawaterk</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="fawaterkMethodWrap">
+                        <label class="form-label">Fawaterk Method</label>
+                        <select class="form-select" name="fawaterk_payment_method_id" id="fawaterkPaymentMethod">
+                            <option value="">Choose Fawaterk method</option>
+                            @foreach($fawaterkPaymentMethods as $method)
+                                <option value="{{ $method['paymentId'] ?? '' }}" {{ (string) old('fawaterk_payment_method_id') === (string) ($method['paymentId'] ?? '') ? 'selected' : '' }}>
+                                    {{ $method['name_en'] ?? $method['name_ar'] ?? 'Payment method' }}
+                                    @if(!empty($method['name_ar']))
+                                        - {{ $method['name_ar'] }}
+                                    @endif
+                                </option>
+                            @endforeach
+                        </select>
+                        @if(empty($fawaterkPaymentMethods))
+                            <small class="text-muted">Add FAWATERK_API_KEY to show enabled Fawaterk methods.</small>
+                        @endif
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Subscription</label>
@@ -201,6 +226,32 @@
 @endsection
 
 @section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const gatewayOptions = document.querySelectorAll('.payment-gateway-option');
+        const fawaterkWrap = document.getElementById('fawaterkMethodWrap');
+        const fawaterkSelect = document.getElementById('fawaterkPaymentMethod');
+
+        function syncGatewayFields() {
+            const selected = document.querySelector('.payment-gateway-option:checked')?.value || 'paymob';
+            const isFawaterk = selected === 'fawaterk';
+
+            if (fawaterkWrap) {
+                fawaterkWrap.classList.toggle('d-none', !isFawaterk);
+            }
+
+            if (fawaterkSelect) {
+                fawaterkSelect.required = isFawaterk;
+            }
+        }
+
+        gatewayOptions.forEach(function (option) {
+            option.addEventListener('change', syncGatewayFields);
+        });
+
+        syncGatewayFields();
+    });
+</script>
 @if($openPaymentModal)
 <script>
     document.addEventListener('DOMContentLoaded', function () {

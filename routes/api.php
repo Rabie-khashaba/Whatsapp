@@ -43,3 +43,4 @@ Route::prefix('v2')->group(function () {
 
 // Paymob redirect/callback (some dashboards require /api/* URLs)
 Route::match(['GET', 'POST'], '/payment/callback', [PaymentController::class, 'paymobCallback']);
+Route::match(['GET', 'POST'], '/payment/fawaterk/callback', [PaymentController::class, 'fawaterkCallback']);
